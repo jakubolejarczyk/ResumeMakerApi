@@ -4,24 +4,24 @@ using ResumeMakerApi.Models.Database.Data;
 
 namespace ResumeMakerApi.Data.Database;
 
-public class EducationDatabaseData(EducationDatabaseConst educationDatabaseConst)
+public class EducationDatabaseData
 {
     private readonly List<BaseDatabaseModel<EducationDataDatabaseModel>> Educations = [];
 
-    public void Init()
+    public EducationDatabaseData(EducationDatabaseConst educationDatabaseConst)
     {
         Educations.Clear();
         Educations.Add(educationDatabaseConst.EDUCATION_0);
         Educations.Add(educationDatabaseConst.EDUCATION_1);
     }
 
-    public void Set(List<BaseDatabaseModel<EducationDataDatabaseModel>> educations)
+    public void SetEducations(List<BaseDatabaseModel<EducationDataDatabaseModel>> educations)
     {
         Educations.Clear();
         Educations.AddRange(educations);
     }
 
-    public List<BaseDatabaseModel<EducationDataDatabaseModel>> Get()
+    public List<BaseDatabaseModel<EducationDataDatabaseModel>> GetEducations()
     {
         return Educations;
     }

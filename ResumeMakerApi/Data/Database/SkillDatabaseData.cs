@@ -4,11 +4,11 @@ using ResumeMakerApi.Models.Database.Data;
 
 namespace ResumeMakerApi.Data.Database;
 
-public class SkillDatabaseData(SkillDatabaseConst skillDatabaseConst)
+public class SkillDatabaseData
 {
     private readonly List<BaseDatabaseModel<SkillDataDatabaseModel>> Skills = [];
 
-    public void Init()
+    public SkillDatabaseData(SkillDatabaseConst skillDatabaseConst)
     {
         Skills.Clear();
         Skills.Add(skillDatabaseConst.SKILL_0);
@@ -17,13 +17,13 @@ public class SkillDatabaseData(SkillDatabaseConst skillDatabaseConst)
         Skills.Add(skillDatabaseConst.SKILL_3);
     }
 
-    public void Set(List<BaseDatabaseModel<SkillDataDatabaseModel>> skills)
+    public void SetSkills(List<BaseDatabaseModel<SkillDataDatabaseModel>> skills)
     {
         Skills.Clear();
         Skills.AddRange(skills);
     }
 
-    public List<BaseDatabaseModel<SkillDataDatabaseModel>> Get()
+    public List<BaseDatabaseModel<SkillDataDatabaseModel>> GetSkills()
     {
         return Skills;
     }

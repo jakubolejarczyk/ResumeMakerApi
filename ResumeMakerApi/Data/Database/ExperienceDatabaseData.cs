@@ -4,24 +4,24 @@ using ResumeMakerApi.Models.Database.Data;
 
 namespace ResumeMakerApi.Data.Database;
 
-public class ExperienceDatabaseData(ExperienceDatabaseConst experienceDatabaseConst)
+public class ExperienceDatabaseData
 {
     private readonly List<BaseDatabaseModel<ExperienceDataDatabaseModel>> Experiences = [];
 
-    public void Init()
+    public ExperienceDatabaseData(ExperienceDatabaseConst experienceDatabaseConst)
     {
         Experiences.Clear();
         Experiences.Add(experienceDatabaseConst.EXPERIENCE_0);
         Experiences.Add(experienceDatabaseConst.EXPERIENCE_1);
     }
 
-    public void Set(List<BaseDatabaseModel<ExperienceDataDatabaseModel>> experiences)
+    public void SetExperiences(List<BaseDatabaseModel<ExperienceDataDatabaseModel>> experiences)
     {
         Experiences.Clear();
         Experiences.AddRange(experiences);
     }
 
-    public List<BaseDatabaseModel<ExperienceDataDatabaseModel>> Get()
+    public List<BaseDatabaseModel<ExperienceDataDatabaseModel>> GetExperiences()
     {
         return Experiences;
     }

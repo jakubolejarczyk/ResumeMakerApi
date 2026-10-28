@@ -4,23 +4,23 @@ using ResumeMakerApi.Models.Database.Data;
 
 namespace ResumeMakerApi.Data.Database;
 
-public class ResumeDatabaseData(ResumeDatabaseConst resumeDatabaseConst)
+public class ResumeDatabaseData
 {
     private readonly List<BaseDatabaseModel<ResumeDataDatabaseModel>> Resumes = [];
 
-    public void Init()
+    public ResumeDatabaseData(ResumeDatabaseConst resumeDatabaseConst)
     {
         Resumes.Clear();
         Resumes.Add(resumeDatabaseConst.RESUME_0);
     }
 
-    public void Set(List<BaseDatabaseModel<ResumeDataDatabaseModel>> resumes)
+    public void SetResumes(List<BaseDatabaseModel<ResumeDataDatabaseModel>> resumes)
     {
         Resumes.Clear();
         Resumes.AddRange(resumes);
     }
 
-    public List<BaseDatabaseModel<ResumeDataDatabaseModel>> Get()
+    public List<BaseDatabaseModel<ResumeDataDatabaseModel>> GetResumes()
     {
         return Resumes;
     }
