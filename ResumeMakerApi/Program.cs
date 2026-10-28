@@ -1,3 +1,5 @@
+using ResumeMakerApi.Consts.Database;
+using ResumeMakerApi.Data.Database;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton<UserDatabaseConst>();
+builder.Services.AddSingleton<ResumeDatabaseConst>();
+builder.Services.AddSingleton<SkillDatabaseConst>();
+builder.Services.AddSingleton<ExperienceDatabaseConst>();
+builder.Services.AddSingleton<EducationDatabaseConst>();
+
+builder.Services.AddSingleton<UserDatabaseData>();
+builder.Services.AddSingleton<SkillDatabaseData>();
+builder.Services.AddSingleton<ResumeDatabaseData>();
+builder.Services.AddSingleton<ExperienceDatabaseData>();
+builder.Services.AddSingleton<EducationDatabaseData>();
 
 var app = builder.Build();
 
