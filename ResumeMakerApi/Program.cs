@@ -38,13 +38,10 @@ builder.Services.AddSingleton<EducationLogicService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AngularPolicy", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy
-            .WithOrigins(
-                "http://localhost:4200",
-                "https://localhost:4200"
-            )
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -52,7 +49,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseCors("AngularPolicy");
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
