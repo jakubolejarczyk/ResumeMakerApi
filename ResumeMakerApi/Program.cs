@@ -1,6 +1,7 @@
 using ResumeMakerApi.Consts.Database;
 using ResumeMakerApi.Data.Database;
 using ResumeMakerApi.Services.Database;
+using ResumeMakerApi.Services.Logic;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,12 @@ builder.Services.AddSingleton<SkillDatabaseService>();
 builder.Services.AddSingleton<ResumeDatabaseService>();
 builder.Services.AddSingleton<ExperienceDatabaseService>();
 builder.Services.AddSingleton<EducationDatabaseService>();
+
+builder.Services.AddSingleton<UserLogicService>();
+builder.Services.AddSingleton<SkillLogicService>();
+builder.Services.AddSingleton<ResumeLogicService>();
+builder.Services.AddSingleton<ExperienceLogicService>();
+builder.Services.AddSingleton<EducationLogicService>();
 
 var app = builder.Build();
 

@@ -56,7 +56,7 @@ public class EducationDatabaseService(EducationDatabaseData educationDatabaseDat
         educationDatabaseData.SetEducations(educations);
     }
 
-    public List<BaseDatabaseModel<EducationDataDatabaseModel>> GetEducation()
+    public List<BaseDatabaseModel<EducationDataDatabaseModel>> GetEducations()
     {
         return educationDatabaseData.GetEducations();
     }
