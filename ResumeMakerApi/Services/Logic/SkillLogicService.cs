@@ -1,4 +1,5 @@
-﻿using ResumeMakerApi.Models.Database.Base;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using ResumeMakerApi.Models.Database.Base;
 using ResumeMakerApi.Models.Database.Data;
 using ResumeMakerApi.Models.Logic;
 using ResumeMakerApi.Services.Database;
@@ -24,7 +25,7 @@ public class SkillLogicService(SkillDatabaseService service)
         var skills = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        foreach (var skill in skills)
+        foreach (var skill in skills.ToList())
         {
             if (skill.Metadata.Id == skillToSelect.Metadata.Id)
             {
@@ -70,7 +71,7 @@ public class SkillLogicService(SkillDatabaseService service)
         var skills = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        var lastOrder = skills.Max(skill => skill.Metadata.Order);
+        var lastOrder = skills.Count == 0 ? 0 : skills.Max(skill => skill.Metadata.Order);
         var skillToCreate = new BaseDatabaseModel<SkillDataDatabaseModel>
         {
             Data = data,

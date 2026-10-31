@@ -24,7 +24,7 @@ public class EducationLogicService(EducationDatabaseService service)
         var educations = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        foreach (var education in educations)
+        foreach (var education in educations.ToList())
         {
             if (education.Metadata.Id == educationToSelect.Metadata.Id)
             {
@@ -70,7 +70,7 @@ public class EducationLogicService(EducationDatabaseService service)
         var educations = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        var lastOrder = educations.Max(education => education.Metadata.Order);
+        var lastOrder = educations.Count == 0 ? 0 : educations.Max(education => education.Metadata.Order);
         var educationToCreate = new BaseDatabaseModel<EducationDataDatabaseModel>
         {
             Data = data,

@@ -22,6 +22,6 @@ public class UserDatabaseData
 
     public List<BaseDatabaseModel<UserDataDatabaseModel>> GetUsers()
     {
-        return Users;
+        return [..Users];
     }
 }

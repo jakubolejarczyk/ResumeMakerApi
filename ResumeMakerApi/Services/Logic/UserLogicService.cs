@@ -25,7 +25,7 @@ public class UserLogicService(UserDatabaseService service)
         var users = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        foreach (var user in users)
+        foreach (var user in users.ToList())
         {
             if (user.Metadata.Id == userToSelect.Metadata.Id)
             {
@@ -73,7 +73,7 @@ public class UserLogicService(UserDatabaseService service)
         var users = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        var lastOrder = users.Max(user => user.Metadata.Order);
+        var lastOrder = users.Count == 0 ? 0 : users.Max(user => user.Metadata.Order);
         var userToCreate = new BaseDatabaseModel<UserDataDatabaseModel>
         {
             Data = data,

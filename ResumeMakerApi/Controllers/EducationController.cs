@@ -40,7 +40,7 @@ public class EducationController(EducationLogicService service) : ControllerBase
     public IActionResult ReadByParentId([FromQuery] int? parentId)
     {
         var result = service.ReadByParentId(parentId);
-        return result.Success ? Ok(result) : NotFound(result);
+        return Ok(result);
     }
 
     [HttpPut("{id}")]

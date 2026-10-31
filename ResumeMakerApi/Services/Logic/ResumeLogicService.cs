@@ -24,7 +24,7 @@ public class ResumeLogicService(ResumeDatabaseService service)
         var resumes = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        foreach (var resume in resumes)
+        foreach (var resume in resumes.ToList())
         {
             if (resume.Metadata.Id == resumeToSelect.Metadata.Id)
             {
@@ -70,7 +70,7 @@ public class ResumeLogicService(ResumeDatabaseService service)
         var resumes = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        var lastOrder = resumes.Max(resume => resume.Metadata.Order);
+        var lastOrder = resumes.Count == 0 ? 0 : resumes.Max(resume => resume.Metadata.Order);
         var resumeToCreate = new BaseDatabaseModel<ResumeDataDatabaseModel>
         {
             Data = data,
