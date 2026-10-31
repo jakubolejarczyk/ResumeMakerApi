@@ -1,4 +1,6 @@
-﻿namespace ResumeMakerApi.Models.Database.Data;
+﻿
+
+namespace ResumeMakerApi.Models.Database.Data;
 
 public class ResumeDataDatabaseModel
 {
@@ -7,4 +9,6 @@ public class ResumeDataDatabaseModel
     public required string JobTitle { get; set; }
 
     public required string Summary { get; set; }
+
+    public required string Rodo { get; set; }
 }
