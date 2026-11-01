@@ -1,63 +1,135 @@
-﻿using ResumeMakerApi.Data.Database;
+﻿using ResumeMakerApi.Database.Context;
+using ResumeMakerApi.Database.Model;
 using ResumeMakerApi.Models.Database.Base;
 using ResumeMakerApi.Models.Database.Data;
 
 namespace ResumeMakerApi.Services.Database;
 
-public class ResumeDatabaseService(ResumeDatabaseData resumeDatabaseData)
+public class ResumeDatabaseService(DatabaseContext context)
 {
-    public void Create(BaseDatabaseModel<ResumeDataDatabaseModel> resumeToCreate)
+    public void Create(BaseDatabaseModel<ResumeDataDatabaseModel> userToCreate)
     {
-        var resumes = ReadAll();
-        resumes.Add(resumeToCreate);
-        resumeDatabaseData.SetResumes(resumes);
+        var user = context.Users.FirstOrDefault(user => user.Id == userToCreate.Metadata.ParentId);
+        var newResume = new ResumeDatabaseModel
+        {
+            ParentId = userToCreate.Metadata.ParentId,
+            Order = userToCreate.Metadata.Order,
+            IsSelected = userToCreate.Metadata.IsSelected,
+            Name = userToCreate.Data.Name,
+            JobTitle = userToCreate.Data.JobTitle,
+            Summary = userToCreate.Data.Summary,
+            Rodo = userToCreate.Data.Rodo,
+            User = user ?? throw new Exception($"User with ID {userToCreate.Metadata.ParentId} not found.")
+        };
+        context.Resumes.Add(newResume);
+        context.SaveChanges();
     }
 
     public List<BaseDatabaseModel<ResumeDataDatabaseModel>> ReadAll()
     {
-        return resumeDatabaseData.GetResumes();
+        return context.Resumes.Select(user => new BaseDatabaseModel<ResumeDataDatabaseModel>
+        {
+            Data = new ResumeDataDatabaseModel
+            {
+                Name = user.Name,
+                JobTitle = user.JobTitle,
+                Summary = user.Summary,
+                Rodo = user.Rodo
+            },
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            }
+        }).ToList();
     }
 
     public BaseDatabaseModel<ResumeDataDatabaseModel>? ReadById(int id)
     {
-        return ReadAll().Find(resume => resume.Metadata.Id == id);
+        return context.Resumes.Where(user => user.Id == id).Select(user => new BaseDatabaseModel<ResumeDataDatabaseModel>
+        {
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            },
+            Data = new ResumeDataDatabaseModel
+            {
+                Name = user.Name,
+                JobTitle = user.JobTitle,
+                Summary = user.Summary,
+                Rodo = user.Rodo
+            }
+        }).FirstOrDefault();
     }
 
     public List<BaseDatabaseModel<ResumeDataDatabaseModel>> ReadByParentId(int parentId)
     {
-        return [..ReadAll().Where(resume =>
+        return context.Resumes.Where(user => user.ParentId == parentId).Select(user => new BaseDatabaseModel<ResumeDataDatabaseModel>
         {
-            if (resume.Metadata.ParentId == null)
+            Metadata = new BaseDatabaseMetadataModel
             {
-                return false;
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            },
+            Data = new ResumeDataDatabaseModel
+            {
+                Name = user.Name,
+                JobTitle = user.JobTitle,
+                Summary = user.Summary,
+                Rodo = user.Rodo
             }
-            return resume.Metadata.ParentId == parentId;
-        })];
+        }).ToList();
     }
 
-    public void Update(BaseDatabaseModel<ResumeDataDatabaseModel> resumeToUpdate)
+    public void Update(BaseDatabaseModel<ResumeDataDatabaseModel> userToUpdate)
     {
-        var resumes = ReadAll().Select((resume) =>
+        var user = context.Resumes.FirstOrDefault(user => user.Id == userToUpdate.Metadata.Id);
+        if (user == null)
         {
-            if (resume.Metadata.Id == resumeToUpdate.Metadata.Id)
-            {
-                return resumeToUpdate;
-            }
-            return resume;
-        }).ToList();
-        resumeDatabaseData.SetResumes(resumes);
+            throw new Exception($"Resume with ID {userToUpdate.Metadata.Id} not found.");
+        }
+        user.ParentId = userToUpdate.Metadata.ParentId;
+        user.Order = userToUpdate.Metadata.Order;
+        user.IsSelected = userToUpdate.Metadata.IsSelected;
+        user.Name = userToUpdate.Data.Name;
+        user.JobTitle = userToUpdate.Data.JobTitle;
+        user.Summary = userToUpdate.Data.Summary;
+        user.Rodo = userToUpdate.Data.Rodo;
+        context.Resumes.Update(user);
+        context.SaveChanges();
     }
 
     public void Delete(int id)
     {
-        var resumes = resumeDatabaseData.GetResumes()
-            .Where(resume => resume.Metadata.Id != id)
-            .ToList();
-        resumeDatabaseData.SetResumes(resumes);
+        context.Resumes.RemoveRange(context.Resumes.Where(user => user.Id == id));
+        context.SaveChanges();
     }
 
     public List<BaseDatabaseModel<ResumeDataDatabaseModel>> GetResumes()
     {
-        return resumeDatabaseData.GetResumes();
+        return context.Resumes.Select(user => new BaseDatabaseModel<ResumeDataDatabaseModel>
+        {
+            Data = new ResumeDataDatabaseModel
+            {
+                Name = user.Name,
+                JobTitle = user.JobTitle,
+                Summary = user.Summary,
+                Rodo = user.Rodo
+            },
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            }
+        }).ToList();
     }
 }
