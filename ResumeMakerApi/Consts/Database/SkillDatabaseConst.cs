@@ -5,9 +5,9 @@ namespace ResumeMakerApi.Consts.Database;
 
 public class SkillDatabaseConst
 {
-    public BaseDatabaseModel<SkillDataDatabaseModel> SKILL_0 = new()
+    public BaseDatabaseModel<SkillDatabaseModel> SKILL_0 = new()
     {
-        Data = new SkillDataDatabaseModel
+        Data = new SkillDatabaseModel
         {
             Category = "Programming Language",
             Skills = ["C#", "JavaScript", "TypeScript"]
@@ -21,9 +21,9 @@ public class SkillDatabaseConst
         }
     };
 
-    public BaseDatabaseModel<SkillDataDatabaseModel> SKILL_1 = new()
+    public BaseDatabaseModel<SkillDatabaseModel> SKILL_1 = new()
     {
-        Data = new SkillDataDatabaseModel
+        Data = new SkillDatabaseModel
         {
             Category = "Frontend",
             Skills = ["HTML", "CSS", "SASS", "Angular", "RxJS", "NGXS", "PrimeNG", "Storybook"]
@@ -37,9 +37,9 @@ public class SkillDatabaseConst
         }
     };
 
-    public BaseDatabaseModel<SkillDataDatabaseModel> SKILL_2 = new()
+    public BaseDatabaseModel<SkillDatabaseModel> SKILL_2 = new()
     {
-        Data = new SkillDataDatabaseModel
+        Data = new SkillDatabaseModel
         {
             Category = "Developer Tools",
             Skills = ["Git", "Node.js", "npm", "Vitest", "ESLint", "typescript-eslint", "Visual Studio", "Microsoft Visual Studio Code"]
@@ -53,9 +53,9 @@ public class SkillDatabaseConst
         }
     };
 
-    public BaseDatabaseModel<SkillDataDatabaseModel> SKILL_3 = new()
+    public BaseDatabaseModel<SkillDatabaseModel> SKILL_3 = new()
     {
-        Data = new SkillDataDatabaseModel
+        Data = new SkillDatabaseModel
         {
             Category = "Languages",
             Skills = ["English", "Polish"]

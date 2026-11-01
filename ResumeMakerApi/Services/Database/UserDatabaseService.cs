@@ -6,24 +6,24 @@ namespace ResumeMakerApi.Services.Database;
 
 public class UserDatabaseService(UserDatabaseData userDatabaseData)
 {
-    public void Create(BaseDatabaseModel<UserDataDatabaseModel> userToCreate)
+    public void Create(BaseDatabaseModel<UserDatabaseModel> userToCreate)
     {
         var users = ReadAll();
         users.Add(userToCreate);
         userDatabaseData.SetUsers(users);
     }
 
-    public List<BaseDatabaseModel<UserDataDatabaseModel>> ReadAll()
+    public List<BaseDatabaseModel<UserDatabaseModel>> ReadAll()
     {
         return userDatabaseData.GetUsers();
     }
 
-    public BaseDatabaseModel<UserDataDatabaseModel>? ReadById(int id)
+    public BaseDatabaseModel<UserDatabaseModel>? ReadById(int id)
     {
         return ReadAll().Find(user => user.Metadata.Id == id);
     }
 
-    public List<BaseDatabaseModel<UserDataDatabaseModel>> ReadByParentId(int parentId)
+    public List<BaseDatabaseModel<UserDatabaseModel>> ReadByParentId(int parentId)
     {
         return [..ReadAll().Where(user =>
         {
@@ -35,7 +35,7 @@ public class UserDatabaseService(UserDatabaseData userDatabaseData)
         })];
     }
 
-    public void Update(BaseDatabaseModel<UserDataDatabaseModel> userToUpdate)
+    public void Update(BaseDatabaseModel<UserDatabaseModel> userToUpdate)
     {
         var users = ReadAll().Select((user) =>
         {
@@ -56,7 +56,7 @@ public class UserDatabaseService(UserDatabaseData userDatabaseData)
         userDatabaseData.SetUsers(users);
     }
 
-    public List<BaseDatabaseModel<UserDataDatabaseModel>> GetUsers()
+    public List<BaseDatabaseModel<UserDatabaseModel>> GetUsers()
     {
         return userDatabaseData.GetUsers();
     }

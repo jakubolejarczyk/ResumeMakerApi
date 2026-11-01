@@ -6,24 +6,24 @@ namespace ResumeMakerApi.Services.Database;
 
 public class SkillDatabaseService(SkillDatabaseData skillDatabaseData)
 {
-    public void Create(BaseDatabaseModel<SkillDataDatabaseModel> skillToCreate)
+    public void Create(BaseDatabaseModel<SkillDatabaseModel> skillToCreate)
     {
         var skills = ReadAll();
         skills.Add(skillToCreate);
         skillDatabaseData.SetSkills(skills);
     }
 
-    public List<BaseDatabaseModel<SkillDataDatabaseModel>> ReadAll()
+    public List<BaseDatabaseModel<SkillDatabaseModel>> ReadAll()
     {
         return skillDatabaseData.GetSkills();
     }
 
-    public BaseDatabaseModel<SkillDataDatabaseModel>? ReadById(int id)
+    public BaseDatabaseModel<SkillDatabaseModel>? ReadById(int id)
     {
         return ReadAll().Find(skill => skill.Metadata.Id == id);
     }
 
-    public List<BaseDatabaseModel<SkillDataDatabaseModel>> ReadByParentId(int parentId)
+    public List<BaseDatabaseModel<SkillDatabaseModel>> ReadByParentId(int parentId)
     {
         return [..ReadAll().Where(skill =>
         {
@@ -35,7 +35,7 @@ public class SkillDatabaseService(SkillDatabaseData skillDatabaseData)
         })];
     }
 
-    public void Update(BaseDatabaseModel<SkillDataDatabaseModel> skillToUpdate)
+    public void Update(BaseDatabaseModel<SkillDatabaseModel> skillToUpdate)
     {
         var skills = ReadAll().Select((skill) =>
         {
@@ -56,7 +56,7 @@ public class SkillDatabaseService(SkillDatabaseData skillDatabaseData)
         skillDatabaseData.SetSkills(skills);
     }
 
-    public List<BaseDatabaseModel<SkillDataDatabaseModel>> GetSkills()
+    public List<BaseDatabaseModel<SkillDatabaseModel>> GetSkills()
     {
         return skillDatabaseData.GetSkills();
     }

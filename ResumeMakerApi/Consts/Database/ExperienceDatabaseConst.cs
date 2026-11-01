@@ -5,9 +5,9 @@ namespace ResumeMakerApi.Consts.Database;
 
 public class ExperienceDatabaseConst
 {
-    public BaseDatabaseModel<ExperienceDataDatabaseModel> EXPERIENCE_0 = new()
+    public BaseDatabaseModel<ExperienceDatabaseModel> EXPERIENCE_0 = new()
     {
-        Data = new ExperienceDataDatabaseModel
+        Data = new ExperienceDatabaseModel
         {
             Company = "APR System",
             JobTitle = "Software Engineer",
@@ -30,9 +30,9 @@ public class ExperienceDatabaseConst
         }
     };
 
-    public BaseDatabaseModel<ExperienceDataDatabaseModel> EXPERIENCE_1 = new()
+    public BaseDatabaseModel<ExperienceDatabaseModel> EXPERIENCE_1 = new()
     {
-        Data = new ExperienceDataDatabaseModel
+        Data = new ExperienceDatabaseModel
         {
             Company = "Primaris",
             JobTitle = "Software Engineer",

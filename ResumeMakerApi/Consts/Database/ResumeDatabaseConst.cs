@@ -5,9 +5,9 @@ namespace ResumeMakerApi.Consts.Database;
 
 public class ResumeDatabaseConst
 {
-    public BaseDatabaseModel<ResumeDataDatabaseModel> RESUME_0 = new()
+    public BaseDatabaseModel<ResumeDatabaseModel> RESUME_0 = new()
     {
-        Data = new ResumeDataDatabaseModel
+        Data = new ResumeDatabaseModel
         {
             Name = "Jakub Olejarczyk - Resume English",
             JobTitle = "Mid Software Engineer",

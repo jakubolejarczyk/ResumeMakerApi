@@ -6,24 +6,24 @@ namespace ResumeMakerApi.Services.Database;
 
 public class EducationDatabaseService(EducationDatabaseData educationDatabaseData)
 {
-    public void Create(BaseDatabaseModel<EducationDataDatabaseModel> educationToCreate)
+    public void Create(BaseDatabaseModel<EducationDatabaseModel> educationToCreate)
     {
         var educations = ReadAll();
         educations.Add(educationToCreate);
         educationDatabaseData.SetEducations(educations);
     }
 
-    public List<BaseDatabaseModel<EducationDataDatabaseModel>> ReadAll()
+    public List<BaseDatabaseModel<EducationDatabaseModel>> ReadAll()
     {
         return educationDatabaseData.GetEducations();
     }
 
-    public BaseDatabaseModel<EducationDataDatabaseModel>? ReadById(int id)
+    public BaseDatabaseModel<EducationDatabaseModel>? ReadById(int id)
     {
         return ReadAll().Find(education => education.Metadata.Id == id);
     }
 
-    public List<BaseDatabaseModel<EducationDataDatabaseModel>> ReadByParentId(int parentId)
+    public List<BaseDatabaseModel<EducationDatabaseModel>> ReadByParentId(int parentId)
     {
         return [..ReadAll().Where(education =>
         {
@@ -35,7 +35,7 @@ public class EducationDatabaseService(EducationDatabaseData educationDatabaseDat
         })];
     }
 
-    public void Update(BaseDatabaseModel<EducationDataDatabaseModel> educationToUpdate)
+    public void Update(BaseDatabaseModel<EducationDatabaseModel> educationToUpdate)
     {
         var educations = ReadAll().Select((education) =>
         {
@@ -56,7 +56,7 @@ public class EducationDatabaseService(EducationDatabaseData educationDatabaseDat
         educationDatabaseData.SetEducations(educations);
     }
 
-    public List<BaseDatabaseModel<EducationDataDatabaseModel>> GetEducations()
+    public List<BaseDatabaseModel<EducationDatabaseModel>> GetEducations()
     {
         return educationDatabaseData.GetEducations();
     }

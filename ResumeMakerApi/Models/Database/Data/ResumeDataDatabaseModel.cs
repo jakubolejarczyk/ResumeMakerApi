@@ -2,7 +2,7 @@
 
 namespace ResumeMakerApi.Models.Database.Data;
 
-public class ResumeDataDatabaseModel
+public class ResumeDatabaseModel
 {
     public required string Name { get; set; }
 

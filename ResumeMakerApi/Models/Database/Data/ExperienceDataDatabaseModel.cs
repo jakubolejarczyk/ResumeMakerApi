@@ -1,6 +1,6 @@
 ﻿namespace ResumeMakerApi.Models.Database.Data;
 
-public class ExperienceDataDatabaseModel
+public class ExperienceDatabaseModel
 {
     public required string Company { get; set; }
 

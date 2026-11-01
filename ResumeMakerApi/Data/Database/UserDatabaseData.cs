@@ -6,7 +6,7 @@ namespace ResumeMakerApi.Data.Database;
 
 public class UserDatabaseData
 {
-    private readonly List<BaseDatabaseModel<UserDataDatabaseModel>> Users = [];
+    private readonly List<BaseDatabaseModel<UserDatabaseModel>> Users = [];
 
     public UserDatabaseData(UserDatabaseConst userDatabaseConst)
     {
@@ -14,13 +14,13 @@ public class UserDatabaseData
         Users.Add(userDatabaseConst.USER_0);
     }
 
-    public void SetUsers(List<BaseDatabaseModel<UserDataDatabaseModel>> users)
+    public void SetUsers(List<BaseDatabaseModel<UserDatabaseModel>> users)
     {
         Users.Clear();
         Users.AddRange(users);
     }
 
-    public List<BaseDatabaseModel<UserDataDatabaseModel>> GetUsers()
+    public List<BaseDatabaseModel<UserDatabaseModel>> GetUsers()
     {
         return [..Users];
     }

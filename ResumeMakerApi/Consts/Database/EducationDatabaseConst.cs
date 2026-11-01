@@ -5,9 +5,9 @@ namespace ResumeMakerApi.Consts.Database;
 
 public class EducationDatabaseConst
 {
-    public BaseDatabaseModel<EducationDataDatabaseModel> EDUCATION_0 = new()
+    public BaseDatabaseModel<EducationDatabaseModel> EDUCATION_0 = new()
     {
-        Data = new EducationDataDatabaseModel
+        Data = new EducationDatabaseModel
         {
             InstitutionName = "Jan Kochanowski University of Kielce",
             FieldOfStudy = "Computer Science",
@@ -24,9 +24,9 @@ public class EducationDatabaseConst
         }
     };
 
-    public BaseDatabaseModel<EducationDataDatabaseModel> EDUCATION_1 = new()
+    public BaseDatabaseModel<EducationDatabaseModel> EDUCATION_1 = new()
     {
-        Data = new EducationDataDatabaseModel
+        Data = new EducationDatabaseModel
         {
             InstitutionName = "Kielce University of Technology",
             FieldOfStudy = "Computer Science",

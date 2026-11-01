@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using ResumeMakerApi.Consts.Database;
 using ResumeMakerApi.Data.Database;
+using ResumeMakerApi.Database.Context;
 using ResumeMakerApi.Services.Database;
 using ResumeMakerApi.Services.Logic;
 using Scalar.AspNetCore;
@@ -35,6 +37,9 @@ builder.Services.AddSingleton<SkillLogicService>();
 builder.Services.AddSingleton<ResumeLogicService>();
 builder.Services.AddSingleton<ExperienceLogicService>();
 builder.Services.AddSingleton<EducationLogicService>();
+
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddCors(options =>
 {
