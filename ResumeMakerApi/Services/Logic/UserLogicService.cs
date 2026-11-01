@@ -9,12 +9,12 @@ public class UserLogicService(UserDatabaseService service)
 {
     private int NextId = service.GetUsers().Count;
 
-    public ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>> Select(int id)
+    public ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>> Select(int id)
     {
         var userToSelect = service.ReadById(id);
         if (userToSelect == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to select the user because it does not exist.",
@@ -38,7 +38,7 @@ public class UserLogicService(UserDatabaseService service)
             service.Update(user);
         }
         var currentUser = service.ReadById(id);
-        return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
         {
             Success = true,
             Message = "The user was selected correctly.",
@@ -46,12 +46,12 @@ public class UserLogicService(UserDatabaseService service)
         };
     }
 
-    public ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>> Deselect(int id)
+    public ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>> Deselect(int id)
     {
         var userToDeselect = service.ReadById(id);
         if (userToDeselect == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to deselect the user because it does not exist.",
@@ -60,7 +60,7 @@ public class UserLogicService(UserDatabaseService service)
         }
         userToDeselect.Metadata.IsSelected = false;
         service.Update(userToDeselect);
-        return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
         {
             Success = true,
             Message = "The user was deselected correctly.",
@@ -68,13 +68,13 @@ public class UserLogicService(UserDatabaseService service)
         };
     }
 
-    public ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>> Create(UserDatabaseModel data, int? parentId)
+    public ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>> Create(UserDataDatabaseModel data, int? parentId)
     {
         var users = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
         var lastOrder = users.Count == 0 ? 0 : users.Max(user => user.Metadata.Order);
-        var userToCreate = new BaseDatabaseModel<UserDatabaseModel>
+        var userToCreate = new BaseDatabaseModel<UserDataDatabaseModel>
         {
             Data = data,
             Metadata = new BaseDatabaseMetadataModel
@@ -87,7 +87,7 @@ public class UserLogicService(UserDatabaseService service)
         };
         NextId++;
         service.Create(userToCreate);
-        return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
         {
             Success = true,
             Message = "The user was created correctly.",
@@ -95,19 +95,19 @@ public class UserLogicService(UserDatabaseService service)
         };
     }
 
-    public ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>> ReadById(int id)
+    public ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>> ReadById(int id)
     {
         var user = service.ReadById(id);
         if (user == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to read the user.",
                 Body = null
             };
         }
-        return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
         {
             Success = true,
             Message = "The user was read correctly.",
@@ -115,21 +115,21 @@ public class UserLogicService(UserDatabaseService service)
         };
     }
 
-    public ResponseLogicModel<List<BaseDatabaseModel<UserDatabaseModel>>> ReadByParentId(int? parentId)
+    public ResponseLogicModel<List<BaseDatabaseModel<UserDataDatabaseModel>>> ReadByParentId(int? parentId)
     {
         var users = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
         if (users.Count == 0)
         {
-            return new ResponseLogicModel<List<BaseDatabaseModel<UserDatabaseModel>>>
+            return new ResponseLogicModel<List<BaseDatabaseModel<UserDataDatabaseModel>>>
             {
                 Success = false,
                 Message = "The list of users is empty.",
                 Body = []
             };
         }
-        return new ResponseLogicModel<List<BaseDatabaseModel<UserDatabaseModel>>>
+        return new ResponseLogicModel<List<BaseDatabaseModel<UserDataDatabaseModel>>>
         {
             Success = true,
             Message = "The users was read correctly.",
@@ -137,12 +137,12 @@ public class UserLogicService(UserDatabaseService service)
         };
     }
 
-    public ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>> Update(int id, UserDatabaseModel data)
+    public ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>> Update(int id, UserDataDatabaseModel data)
     {
         var userToUpdate = service.ReadById(id);
         if (userToUpdate == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "The list of users is empty.",
@@ -151,7 +151,7 @@ public class UserLogicService(UserDatabaseService service)
         }
         userToUpdate.Data = data;
         service.Update(userToUpdate);
-        return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
         {
             Success = true,
             Message = "The user was updated correctly.",
@@ -159,12 +159,12 @@ public class UserLogicService(UserDatabaseService service)
         };
     }
 
-    public ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>> Delete(int id)
+    public ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>> Delete(int id)
     {
         var userToDelete = service.ReadById(id);
         if (userToDelete == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to delete the user because it does not exist.",
@@ -185,7 +185,7 @@ public class UserLogicService(UserDatabaseService service)
             })
             .ToList()
             .ForEach(service.Update);
-        return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
         {
             Success = true,
             Message = "The user was deleted correctly.",
@@ -193,12 +193,12 @@ public class UserLogicService(UserDatabaseService service)
         };
     }
 
-    public ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>> MoveUp(int id)
+    public ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>> MoveUp(int id)
     {
         var userToMoveUp = service.ReadById(id);
         if (userToMoveUp == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move up the user because it does not exist.",
@@ -207,7 +207,7 @@ public class UserLogicService(UserDatabaseService service)
         }
         if (userToMoveUp.Metadata.Order == 0)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move up the user because it is the first element.",
@@ -222,7 +222,7 @@ public class UserLogicService(UserDatabaseService service)
         );
         if (prevUser == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move up the user because the previous user does not exist.",
@@ -234,7 +234,7 @@ public class UserLogicService(UserDatabaseService service)
         prevUser.Metadata.Order = userToMoveUpOrder;
         service.Update(userToMoveUp);
         service.Update(prevUser);
-        return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
         {
             Success = true,
             Message = "The user was moved up correctly.",
@@ -242,12 +242,12 @@ public class UserLogicService(UserDatabaseService service)
         };
     }
 
-    public ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>> MoveDown(int id)
+    public ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>> MoveDown(int id)
     {
         var userToMoveDown = service.ReadById(id);
         if (userToMoveDown == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move down the user because it does not exist.",
@@ -265,7 +265,7 @@ public class UserLogicService(UserDatabaseService service)
         );
         if (userToMoveDown.Metadata.Order == lastOrder)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move down the user because it is the last element.",
@@ -277,7 +277,7 @@ public class UserLogicService(UserDatabaseService service)
         );
         if (nextUser == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move down the user because the next user does not exist.",
@@ -289,7 +289,7 @@ public class UserLogicService(UserDatabaseService service)
         nextUser.Metadata.Order = userToMoveDownOrder;
         service.Update(userToMoveDown);
         service.Update(nextUser);
-        return new ResponseLogicModel<BaseDatabaseModel<UserDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<UserDataDatabaseModel>>
         {
             Success = true,
             Message = "The user was moved down correctly.",

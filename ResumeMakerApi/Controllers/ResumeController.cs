@@ -23,7 +23,7 @@ public class ResumeController(ResumeLogicService service) : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] ResumeDatabaseModel data, [FromQuery] int? parentId)
+    public IActionResult Create([FromBody] ResumeDataDatabaseModel data, [FromQuery] int? parentId)
     {
         var result = service.Create(data, parentId);
         return result.Success ? Ok(result) : BadRequest(result);
@@ -44,7 +44,7 @@ public class ResumeController(ResumeLogicService service) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] ResumeDatabaseModel data)
+    public IActionResult Update(int id, [FromBody] ResumeDataDatabaseModel data)
     {
         var result = service.Update(id, data);
         return result.Success ? Ok(result) : NotFound(result);

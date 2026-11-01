@@ -5,9 +5,9 @@ namespace ResumeMakerApi.Consts.Database;
 
 public class UserDatabaseConst
 {
-    public BaseDatabaseModel<UserDatabaseModel> USER_0 = new()
+    public BaseDatabaseModel<UserDataDatabaseModel> USER_0 = new()
     {
-        Data = new UserDatabaseModel
+        Data = new UserDataDatabaseModel
         {
             FirstName = "Jakub",
             LastName = "Olejarczyk",

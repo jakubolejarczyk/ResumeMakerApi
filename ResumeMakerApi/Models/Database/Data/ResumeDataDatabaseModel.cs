@@ -1,8 +1,6 @@
-﻿
+﻿namespace ResumeMakerApi.Models.Database.Data;
 
-namespace ResumeMakerApi.Models.Database.Data;
-
-public class ResumeDatabaseModel
+public class ResumeDataDatabaseModel
 {
     public required string Name { get; set; }
 

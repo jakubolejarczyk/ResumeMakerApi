@@ -1,6 +1,6 @@
 ﻿namespace ResumeMakerApi.Models.Database.Data;
 
-public class EducationDatabaseModel
+public class EducationDataDatabaseModel
 {
     public required string InstitutionName { get; set; }
 

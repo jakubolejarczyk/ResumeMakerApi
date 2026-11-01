@@ -14,32 +14,32 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<UserDatabaseConst>();
-builder.Services.AddSingleton<ResumeDatabaseConst>();
-builder.Services.AddSingleton<SkillDatabaseConst>();
-builder.Services.AddSingleton<ExperienceDatabaseConst>();
-builder.Services.AddSingleton<EducationDatabaseConst>();
-
-builder.Services.AddSingleton<UserDatabaseData>();
-builder.Services.AddSingleton<SkillDatabaseData>();
-builder.Services.AddSingleton<ResumeDatabaseData>();
-builder.Services.AddSingleton<ExperienceDatabaseData>();
-builder.Services.AddSingleton<EducationDatabaseData>();
-
-builder.Services.AddSingleton<UserDatabaseService>();
-builder.Services.AddSingleton<SkillDatabaseService>();
-builder.Services.AddSingleton<ResumeDatabaseService>();
-builder.Services.AddSingleton<ExperienceDatabaseService>();
-builder.Services.AddSingleton<EducationDatabaseService>();
-
-builder.Services.AddSingleton<UserLogicService>();
-builder.Services.AddSingleton<SkillLogicService>();
-builder.Services.AddSingleton<ResumeLogicService>();
-builder.Services.AddSingleton<ExperienceLogicService>();
-builder.Services.AddSingleton<EducationLogicService>();
-
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<UserDatabaseConst>();
+builder.Services.AddScoped<ResumeDatabaseConst>();
+builder.Services.AddScoped<SkillDatabaseConst>();
+builder.Services.AddScoped<ExperienceDatabaseConst>();
+builder.Services.AddScoped<EducationDatabaseConst>();
+
+builder.Services.AddScoped<UserDatabaseData>();
+builder.Services.AddScoped<SkillDatabaseData>();
+builder.Services.AddScoped<ResumeDatabaseData>();
+builder.Services.AddScoped<ExperienceDatabaseData>();
+builder.Services.AddScoped<EducationDatabaseData>();
+
+builder.Services.AddScoped<UserDatabaseService>();
+builder.Services.AddScoped<SkillDatabaseService>();
+builder.Services.AddScoped<ResumeDatabaseService>();
+builder.Services.AddScoped<ExperienceDatabaseService>();
+builder.Services.AddScoped<EducationDatabaseService>();
+
+builder.Services.AddScoped<UserLogicService>();
+builder.Services.AddScoped<SkillLogicService>();
+builder.Services.AddScoped<ResumeLogicService>();
+builder.Services.AddScoped<ExperienceLogicService>();
+builder.Services.AddScoped<EducationLogicService>();
 
 builder.Services.AddCors(options =>
 {

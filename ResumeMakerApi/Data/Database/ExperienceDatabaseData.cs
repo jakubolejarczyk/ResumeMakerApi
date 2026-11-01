@@ -6,7 +6,7 @@ namespace ResumeMakerApi.Data.Database;
 
 public class ExperienceDatabaseData
 {
-    private readonly List<BaseDatabaseModel<ExperienceDatabaseModel>> Experiences = [];
+    private readonly List<BaseDatabaseModel<ExperienceDataDatabaseModel>> Experiences = [];
 
     public ExperienceDatabaseData(ExperienceDatabaseConst experienceDatabaseConst)
     {
@@ -15,13 +15,13 @@ public class ExperienceDatabaseData
         Experiences.Add(experienceDatabaseConst.EXPERIENCE_1);
     }
 
-    public void SetExperiences(List<BaseDatabaseModel<ExperienceDatabaseModel>> experiences)
+    public void SetExperiences(List<BaseDatabaseModel<ExperienceDataDatabaseModel>> experiences)
     {
         Experiences.Clear();
         Experiences.AddRange(experiences);
     }
 
-    public List<BaseDatabaseModel<ExperienceDatabaseModel>> GetExperiences()
+    public List<BaseDatabaseModel<ExperienceDataDatabaseModel>> GetExperiences()
     {
         return Experiences;
     }

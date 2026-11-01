@@ -6,24 +6,24 @@ namespace ResumeMakerApi.Services.Database;
 
 public class ExperienceDatabaseService(ExperienceDatabaseData experienceDatabaseData)
 {
-    public void Create(BaseDatabaseModel<ExperienceDatabaseModel> experienceToCreate)
+    public void Create(BaseDatabaseModel<ExperienceDataDatabaseModel> experienceToCreate)
     {
         var experiences = ReadAll();
         experiences.Add(experienceToCreate);
         experienceDatabaseData.SetExperiences(experiences);
     }
 
-    public List<BaseDatabaseModel<ExperienceDatabaseModel>> ReadAll()
+    public List<BaseDatabaseModel<ExperienceDataDatabaseModel>> ReadAll()
     {
         return experienceDatabaseData.GetExperiences();
     }
 
-    public BaseDatabaseModel<ExperienceDatabaseModel>? ReadById(int id)
+    public BaseDatabaseModel<ExperienceDataDatabaseModel>? ReadById(int id)
     {
         return ReadAll().Find(experience => experience.Metadata.Id == id);
     }
 
-    public List<BaseDatabaseModel<ExperienceDatabaseModel>> ReadByParentId(int parentId)
+    public List<BaseDatabaseModel<ExperienceDataDatabaseModel>> ReadByParentId(int parentId)
     {
         return [..ReadAll().Where(experience =>
         {
@@ -35,7 +35,7 @@ public class ExperienceDatabaseService(ExperienceDatabaseData experienceDatabase
         })];
     }
 
-    public void Update(BaseDatabaseModel<ExperienceDatabaseModel> experienceToUpdate)
+    public void Update(BaseDatabaseModel<ExperienceDataDatabaseModel> experienceToUpdate)
     {
         var experiences = ReadAll().Select((experience) =>
         {
@@ -56,7 +56,7 @@ public class ExperienceDatabaseService(ExperienceDatabaseData experienceDatabase
         experienceDatabaseData.SetExperiences(experiences);
     }
 
-    public List<BaseDatabaseModel<ExperienceDatabaseModel>> GetExperiences()
+    public List<BaseDatabaseModel<ExperienceDataDatabaseModel>> GetExperiences()
     {
         return experienceDatabaseData.GetExperiences();
     }

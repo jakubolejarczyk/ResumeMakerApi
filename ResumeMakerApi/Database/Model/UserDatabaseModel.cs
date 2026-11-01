@@ -2,7 +2,7 @@
 
 public class UserDatabaseModel
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
 
     public int? ParentId { get; set; }
 
@@ -24,5 +24,5 @@ public class UserDatabaseModel
 
     public required string[] Links { get; set; }
 
-    public required ICollection<ResumeDatabaseModel> Resumes { get; set; }
+    public ICollection<ResumeDatabaseModel> Resumes { get; set; }
 }

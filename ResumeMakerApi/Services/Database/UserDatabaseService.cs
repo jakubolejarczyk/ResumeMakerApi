@@ -1,63 +1,151 @@
-﻿using ResumeMakerApi.Data.Database;
+﻿using ResumeMakerApi.Database.Context;
+using ResumeMakerApi.Database.Model;
 using ResumeMakerApi.Models.Database.Base;
 using ResumeMakerApi.Models.Database.Data;
 
 namespace ResumeMakerApi.Services.Database;
 
-public class UserDatabaseService(UserDatabaseData userDatabaseData)
+public class UserDatabaseService(DatabaseContext context)
 {
-    public void Create(BaseDatabaseModel<UserDatabaseModel> userToCreate)
+    public void Create(BaseDatabaseModel<UserDataDatabaseModel> userToCreate)
     {
-        var users = ReadAll();
-        users.Add(userToCreate);
-        userDatabaseData.SetUsers(users);
-    }
-
-    public List<BaseDatabaseModel<UserDatabaseModel>> ReadAll()
-    {
-        return userDatabaseData.GetUsers();
-    }
-
-    public BaseDatabaseModel<UserDatabaseModel>? ReadById(int id)
-    {
-        return ReadAll().Find(user => user.Metadata.Id == id);
-    }
-
-    public List<BaseDatabaseModel<UserDatabaseModel>> ReadByParentId(int parentId)
-    {
-        return [..ReadAll().Where(user =>
+        var newUser = new UserDatabaseModel
         {
-            if (user.Metadata.ParentId == null)
-            {
-                return false;
-            }
-            return user.Metadata.ParentId == parentId;
-        })];
+            ParentId = userToCreate.Metadata.ParentId,
+            Order = userToCreate.Metadata.Order,
+            IsSelected = userToCreate.Metadata.IsSelected,
+            FirstName = userToCreate.Data.FirstName,
+            LastName = userToCreate.Data.LastName,
+            PhoneNumber = userToCreate.Data.PhoneNumber,
+            Email = userToCreate.Data.Email,
+            City = userToCreate.Data.City,
+            Country = userToCreate.Data.Country,
+            Links = userToCreate.Data.Links
+        };
+        context.Users.Add(newUser);
+        context.SaveChanges();
     }
 
-    public void Update(BaseDatabaseModel<UserDatabaseModel> userToUpdate)
+    public List<BaseDatabaseModel<UserDataDatabaseModel>> ReadAll()
     {
-        var users = ReadAll().Select((user) =>
+        return context.Users.Select(user => new BaseDatabaseModel<UserDataDatabaseModel>
         {
-            if (user.Metadata.Id == userToUpdate.Metadata.Id)
+            Data = new UserDataDatabaseModel
             {
-                return userToUpdate;
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                City = user.City,
+                Country = user.Country,
+                Links = user.Links
+            },
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
             }
-            return user;
         }).ToList();
-        userDatabaseData.SetUsers(users);
+    }
+
+    public BaseDatabaseModel<UserDataDatabaseModel>? ReadById(int id)
+    {
+        return context.Users.Where(user => user.Id == id).Select(user => new BaseDatabaseModel<UserDataDatabaseModel>
+        {
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            },
+            Data = new UserDataDatabaseModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                City = user.City,
+                Country = user.Country,
+                Links = user.Links
+            }
+        }).FirstOrDefault();
+    }
+
+    public List<BaseDatabaseModel<UserDataDatabaseModel>> ReadByParentId(int parentId)
+    {
+        return context.Users.Where(user => user.ParentId == parentId).Select(user => new BaseDatabaseModel<UserDataDatabaseModel>
+        {
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            },
+            Data = new UserDataDatabaseModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                City = user.City,
+                Country = user.Country,
+                Links = user.Links
+            }
+        }).ToList();
+    }
+
+    public void Update(BaseDatabaseModel<UserDataDatabaseModel> userToUpdate)
+    {
+        var user = context.Users.FirstOrDefault(user => user.Id == userToUpdate.Metadata.Id);
+        if (user == null)
+        {
+            throw new Exception($"User with ID {userToUpdate.Metadata.Id} not found.");
+        }
+        user.ParentId = userToUpdate.Metadata.ParentId;
+        user.Order = userToUpdate.Metadata.Order;
+        user.IsSelected = userToUpdate.Metadata.IsSelected;
+        user.FirstName = userToUpdate.Data.FirstName;
+        user.LastName = userToUpdate.Data.LastName;
+        user.PhoneNumber = userToUpdate.Data.PhoneNumber;
+        user.Email = userToUpdate.Data.Email;
+        user.City = userToUpdate.Data.City;
+        user.Country = userToUpdate.Data.Country;
+        user.Links = userToUpdate.Data.Links;
+        context.Users.Update(user);
+        context.SaveChanges();
     }
 
     public void Delete(int id)
     {
-        var users = userDatabaseData.GetUsers()
-            .Where(user => user.Metadata.Id != id)
-            .ToList();
-        userDatabaseData.SetUsers(users);
+        context.Users.RemoveRange(context.Users.Where(user => user.Id == id));
+        context.SaveChanges();
     }
 
-    public List<BaseDatabaseModel<UserDatabaseModel>> GetUsers()
+    public List<BaseDatabaseModel<UserDataDatabaseModel>> GetUsers()
     {
-        return userDatabaseData.GetUsers();
+        return context.Users.Select(user => new BaseDatabaseModel<UserDataDatabaseModel>
+        {
+            Data = new UserDataDatabaseModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                City = user.City,
+                Country = user.Country,
+                Links = user.Links
+            },
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            }
+        }).ToList();
     }
 }

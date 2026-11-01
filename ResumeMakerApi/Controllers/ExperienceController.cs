@@ -23,7 +23,7 @@ public class ExperienceController(ExperienceLogicService service) : ControllerBa
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] ExperienceDatabaseModel data, [FromQuery] int? parentId)
+    public IActionResult Create([FromBody] ExperienceDataDatabaseModel data, [FromQuery] int? parentId)
     {
         var result = service.Create(data, parentId);
         return result.Success ? Ok(result) : BadRequest(result);
@@ -44,7 +44,7 @@ public class ExperienceController(ExperienceLogicService service) : ControllerBa
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] ExperienceDatabaseModel data)
+    public IActionResult Update(int id, [FromBody] ExperienceDataDatabaseModel data)
     {
         var result = service.Update(id, data);
         return result.Success ? Ok(result) : NotFound(result);

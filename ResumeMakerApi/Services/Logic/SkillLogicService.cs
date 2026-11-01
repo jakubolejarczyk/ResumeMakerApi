@@ -9,12 +9,12 @@ namespace ResumeMakerApi.Services.Logic;
 public class SkillLogicService(SkillDatabaseService service)
 {
     private int NextId = service.GetSkills().Count;
-    public ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>> Select(int id)
+    public ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>> Select(int id)
     {
         var skillToSelect = service.ReadById(id);
         if (skillToSelect == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to select the skill because it does not exist.",
@@ -38,19 +38,19 @@ public class SkillLogicService(SkillDatabaseService service)
             service.Update(skill);
         }
         var currentSkill = service.ReadById(id);
-        return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
         {
             Success = true,
             Message = "The skill was selected correctly.",
             Body = currentSkill
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>> Deselect(int id)
+    public ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>> Deselect(int id)
     {
         var skillToDeselect = service.ReadById(id);
         if (skillToDeselect == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to deselect the skill because it does not exist.",
@@ -59,20 +59,20 @@ public class SkillLogicService(SkillDatabaseService service)
         }
         skillToDeselect.Metadata.IsSelected = false;
         service.Update(skillToDeselect);
-        return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
         {
             Success = true,
             Message = "The skill was deselected correctly.",
             Body = skillToDeselect
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>> Create(SkillDatabaseModel data, int? parentId)
+    public ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>> Create(SkillDataDatabaseModel data, int? parentId)
     {
         var skills = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
         var lastOrder = skills.Count == 0 ? 0 : skills.Max(skill => skill.Metadata.Order);
-        var skillToCreate = new BaseDatabaseModel<SkillDatabaseModel>
+        var skillToCreate = new BaseDatabaseModel<SkillDataDatabaseModel>
         {
             Data = data,
             Metadata = new BaseDatabaseMetadataModel
@@ -85,59 +85,59 @@ public class SkillLogicService(SkillDatabaseService service)
         };
         NextId++;
         service.Create(skillToCreate);
-        return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
         {
             Success = true,
             Message = "The skill was created correctly.",
             Body = skillToCreate
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>> ReadById(int id)
+    public ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>> ReadById(int id)
     {
         var skill = service.ReadById(id);
         if (skill == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to read the skill.",
                 Body = null
             };
         }
-        return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
         {
             Success = true,
             Message = "The skill was read correctly.",
             Body = skill
         };
     }
-    public ResponseLogicModel<List<BaseDatabaseModel<SkillDatabaseModel>>> ReadByParentId(int? parentId)
+    public ResponseLogicModel<List<BaseDatabaseModel<SkillDataDatabaseModel>>> ReadByParentId(int? parentId)
     {
         var skills = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
         if (skills.Count == 0)
         {
-            return new ResponseLogicModel<List<BaseDatabaseModel<SkillDatabaseModel>>>
+            return new ResponseLogicModel<List<BaseDatabaseModel<SkillDataDatabaseModel>>>
             {
                 Success = false,
                 Message = "The list of skills is empty.",
                 Body = []
             };
         }
-        return new ResponseLogicModel<List<BaseDatabaseModel<SkillDatabaseModel>>>
+        return new ResponseLogicModel<List<BaseDatabaseModel<SkillDataDatabaseModel>>>
         {
             Success = true,
             Message = "The skills were read correctly.",
             Body = skills
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>> Update(int id, SkillDatabaseModel data)
+    public ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>> Update(int id, SkillDataDatabaseModel data)
     {
         var skillToUpdate = service.ReadById(id);
         if (skillToUpdate == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to update the skill because it does not exist.",
@@ -146,19 +146,19 @@ public class SkillLogicService(SkillDatabaseService service)
         }
         skillToUpdate.Data = data;
         service.Update(skillToUpdate);
-        return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
         {
             Success = true,
             Message = "The skill was updated correctly.",
             Body = skillToUpdate
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>> Delete(int id)
+    public ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>> Delete(int id)
     {
         var skillToDelete = service.ReadById(id);
         if (skillToDelete == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to delete the skill because it does not exist.",
@@ -179,19 +179,19 @@ public class SkillLogicService(SkillDatabaseService service)
             })
             .ToList()
             .ForEach(service.Update);
-        return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
         {
             Success = true,
             Message = "The skill was deleted correctly.",
             Body = skillToDelete
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>> MoveUp(int id)
+    public ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>> MoveUp(int id)
     {
         var skillToMoveUp = service.ReadById(id);
         if (skillToMoveUp == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move up the skill because it does not exist.",
@@ -200,7 +200,7 @@ public class SkillLogicService(SkillDatabaseService service)
         }
         if (skillToMoveUp.Metadata.Order == 0)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move up the skill because it is the first element.",
@@ -215,7 +215,7 @@ public class SkillLogicService(SkillDatabaseService service)
         );
         if (prevSkill == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move up the skill because the previous skill does not exist.",
@@ -227,19 +227,19 @@ public class SkillLogicService(SkillDatabaseService service)
         prevSkill.Metadata.Order = skillToMoveUpOrder;
         service.Update(skillToMoveUp);
         service.Update(prevSkill);
-        return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
         {
             Success = true,
             Message = "The skill was moved up correctly.",
             Body = skillToMoveUp
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>> MoveDown(int id)
+    public ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>> MoveDown(int id)
     {
         var skillToMoveDown = service.ReadById(id);
         if (skillToMoveDown == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move down the skill because it does not exist.",
@@ -257,7 +257,7 @@ public class SkillLogicService(SkillDatabaseService service)
         );
         if (skillToMoveDown.Metadata.Order == lastOrder)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move down the skill because it is the last element.",
@@ -269,7 +269,7 @@ public class SkillLogicService(SkillDatabaseService service)
         );
         if (nextSkill == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move down the skill because the next skill does not exist.",
@@ -281,7 +281,7 @@ public class SkillLogicService(SkillDatabaseService service)
         nextSkill.Metadata.Order = skillToMoveDownOrder;
         service.Update(skillToMoveDown);
         service.Update(nextSkill);
-        return new ResponseLogicModel<BaseDatabaseModel<SkillDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<SkillDataDatabaseModel>>
         {
             Success = true,
             Message = "The skill was moved down correctly.",

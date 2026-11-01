@@ -8,12 +8,12 @@ namespace ResumeMakerApi.Services.Logic;
 public class ExperienceLogicService(ExperienceDatabaseService service)
 {
     private int NextId = service.GetExperiences().Count;
-    public ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>> Select(int id)
+    public ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>> Select(int id)
     {
         var experienceToSelect = service.ReadById(id);
         if (experienceToSelect == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to select the experience because it does not exist.",
@@ -37,19 +37,19 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
             service.Update(experience);
         }
         var currentExperience = service.ReadById(id);
-        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
         {
             Success = true,
             Message = "The experience was selected correctly.",
             Body = currentExperience
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>> Deselect(int id)
+    public ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>> Deselect(int id)
     {
         var experienceToDeselect = service.ReadById(id);
         if (experienceToDeselect == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to deselect the experience because it does not exist.",
@@ -58,20 +58,20 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         }
         experienceToDeselect.Metadata.IsSelected = false;
         service.Update(experienceToDeselect);
-        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
         {
             Success = true,
             Message = "The experience was deselected correctly.",
             Body = experienceToDeselect
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>> Create(ExperienceDatabaseModel data, int? parentId)
+    public ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>> Create(ExperienceDataDatabaseModel data, int? parentId)
     {
         var experiences = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
         var lastOrder = experiences.Count == 0 ? 0 : experiences.Max(experience => experience.Metadata.Order);
-        var experienceToCreate = new BaseDatabaseModel<ExperienceDatabaseModel>
+        var experienceToCreate = new BaseDatabaseModel<ExperienceDataDatabaseModel>
         {
             Data = data,
             Metadata = new BaseDatabaseMetadataModel
@@ -84,59 +84,59 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         };
         NextId++;
         service.Create(experienceToCreate);
-        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
         {
             Success = true,
             Message = "The experience was created correctly.",
             Body = experienceToCreate
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>> ReadById(int id)
+    public ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>> ReadById(int id)
     {
         var experience = service.ReadById(id);
         if (experience == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to read the experience.",
                 Body = null
             };
         }
-        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
         {
             Success = true,
             Message = "The experience was read correctly.",
             Body = experience
         };
     }
-    public ResponseLogicModel<List<BaseDatabaseModel<ExperienceDatabaseModel>>> ReadByParentId(int? parentId)
+    public ResponseLogicModel<List<BaseDatabaseModel<ExperienceDataDatabaseModel>>> ReadByParentId(int? parentId)
     {
         var experiences = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
         if (experiences.Count == 0)
         {
-            return new ResponseLogicModel<List<BaseDatabaseModel<ExperienceDatabaseModel>>>
+            return new ResponseLogicModel<List<BaseDatabaseModel<ExperienceDataDatabaseModel>>>
             {
                 Success = false,
                 Message = "The list of experiences is empty.",
                 Body = []
             };
         }
-        return new ResponseLogicModel<List<BaseDatabaseModel<ExperienceDatabaseModel>>>
+        return new ResponseLogicModel<List<BaseDatabaseModel<ExperienceDataDatabaseModel>>>
         {
             Success = true,
             Message = "The experiences were read correctly.",
             Body = experiences
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>> Update(int id, ExperienceDatabaseModel data)
+    public ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>> Update(int id, ExperienceDataDatabaseModel data)
     {
         var experienceToUpdate = service.ReadById(id);
         if (experienceToUpdate == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to update the experience because it does not exist.",
@@ -145,19 +145,19 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         }
         experienceToUpdate.Data = data;
         service.Update(experienceToUpdate);
-        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
         {
             Success = true,
             Message = "The experience was updated correctly.",
             Body = experienceToUpdate
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>> Delete(int id)
+    public ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>> Delete(int id)
     {
         var experienceToDelete = service.ReadById(id);
         if (experienceToDelete == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to delete the experience because it does not exist.",
@@ -178,19 +178,19 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
             })
             .ToList()
             .ForEach(service.Update);
-        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
         {
             Success = true,
             Message = "The experience was deleted correctly.",
             Body = experienceToDelete
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>> MoveUp(int id)
+    public ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>> MoveUp(int id)
     {
         var experienceToMoveUp = service.ReadById(id);
         if (experienceToMoveUp == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move up the experience because it does not exist.",
@@ -199,7 +199,7 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         }
         if (experienceToMoveUp.Metadata.Order == 0)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move up the experience because it is the first element.",
@@ -214,7 +214,7 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         );
         if (prevExperience == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move up the experience because the previous experience does not exist.",
@@ -226,19 +226,19 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         prevExperience.Metadata.Order = experienceToMoveUpOrder;
         service.Update(experienceToMoveUp);
         service.Update(prevExperience);
-        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
         {
             Success = true,
             Message = "The experience was moved up correctly.",
             Body = experienceToMoveUp
         };
     }
-    public ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>> MoveDown(int id)
+    public ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>> MoveDown(int id)
     {
         var experienceToMoveDown = service.ReadById(id);
         if (experienceToMoveDown == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move down the experience because it does not exist.",
@@ -256,7 +256,7 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         );
         if (experienceToMoveDown.Metadata.Order == lastOrder)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move down the experience because it is the last element.",
@@ -268,7 +268,7 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         );
         if (nextExperience == null)
         {
-            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+            return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
             {
                 Success = false,
                 Message = "Failed to move down the experience because the next experience does not exist.",
@@ -280,7 +280,7 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         nextExperience.Metadata.Order = experienceToMoveDownOrder;
         service.Update(experienceToMoveDown);
         service.Update(nextExperience);
-        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDatabaseModel>>
+        return new ResponseLogicModel<BaseDatabaseModel<ExperienceDataDatabaseModel>>
         {
             Success = true,
             Message = "The experience was moved down correctly.",

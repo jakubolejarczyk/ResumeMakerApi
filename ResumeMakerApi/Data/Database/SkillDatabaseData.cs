@@ -6,7 +6,7 @@ namespace ResumeMakerApi.Data.Database;
 
 public class SkillDatabaseData
 {
-    private readonly List<BaseDatabaseModel<SkillDatabaseModel>> Skills = [];
+    private readonly List<BaseDatabaseModel<SkillDataDatabaseModel>> Skills = [];
 
     public SkillDatabaseData(SkillDatabaseConst skillDatabaseConst)
     {
@@ -17,13 +17,13 @@ public class SkillDatabaseData
         Skills.Add(skillDatabaseConst.SKILL_3);
     }
 
-    public void SetSkills(List<BaseDatabaseModel<SkillDatabaseModel>> skills)
+    public void SetSkills(List<BaseDatabaseModel<SkillDataDatabaseModel>> skills)
     {
         Skills.Clear();
         Skills.AddRange(skills);
     }
 
-    public List<BaseDatabaseModel<SkillDatabaseModel>> GetSkills()
+    public List<BaseDatabaseModel<SkillDataDatabaseModel>> GetSkills()
     {
         return Skills;
     }

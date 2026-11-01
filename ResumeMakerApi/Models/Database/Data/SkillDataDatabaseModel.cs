@@ -1,6 +1,6 @@
 ﻿namespace ResumeMakerApi.Models.Database.Data;
 
-public class SkillDatabaseModel
+public class SkillDataDatabaseModel
 {
     public required string Category { get; set; }
 

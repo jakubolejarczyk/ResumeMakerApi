@@ -6,24 +6,24 @@ namespace ResumeMakerApi.Services.Database;
 
 public class ResumeDatabaseService(ResumeDatabaseData resumeDatabaseData)
 {
-    public void Create(BaseDatabaseModel<ResumeDatabaseModel> resumeToCreate)
+    public void Create(BaseDatabaseModel<ResumeDataDatabaseModel> resumeToCreate)
     {
         var resumes = ReadAll();
         resumes.Add(resumeToCreate);
         resumeDatabaseData.SetResumes(resumes);
     }
 
-    public List<BaseDatabaseModel<ResumeDatabaseModel>> ReadAll()
+    public List<BaseDatabaseModel<ResumeDataDatabaseModel>> ReadAll()
     {
         return resumeDatabaseData.GetResumes();
     }
 
-    public BaseDatabaseModel<ResumeDatabaseModel>? ReadById(int id)
+    public BaseDatabaseModel<ResumeDataDatabaseModel>? ReadById(int id)
     {
         return ReadAll().Find(resume => resume.Metadata.Id == id);
     }
 
-    public List<BaseDatabaseModel<ResumeDatabaseModel>> ReadByParentId(int parentId)
+    public List<BaseDatabaseModel<ResumeDataDatabaseModel>> ReadByParentId(int parentId)
     {
         return [..ReadAll().Where(resume =>
         {
@@ -35,7 +35,7 @@ public class ResumeDatabaseService(ResumeDatabaseData resumeDatabaseData)
         })];
     }
 
-    public void Update(BaseDatabaseModel<ResumeDatabaseModel> resumeToUpdate)
+    public void Update(BaseDatabaseModel<ResumeDataDatabaseModel> resumeToUpdate)
     {
         var resumes = ReadAll().Select((resume) =>
         {
@@ -56,7 +56,7 @@ public class ResumeDatabaseService(ResumeDatabaseData resumeDatabaseData)
         resumeDatabaseData.SetResumes(resumes);
     }
 
-    public List<BaseDatabaseModel<ResumeDatabaseModel>> GetResumes()
+    public List<BaseDatabaseModel<ResumeDataDatabaseModel>> GetResumes()
     {
         return resumeDatabaseData.GetResumes();
     }
