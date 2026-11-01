@@ -4,7 +4,7 @@ namespace ResumeMakerApi.Database.Model;
 
 public class EducationDatabaseModel
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
 
     public int? ParentId { get; set; }
 
@@ -23,5 +23,5 @@ public class EducationDatabaseModel
     public required int EndYear { get; set; }
 
     [ForeignKey("ResumeId")]
-    public required ResumeDatabaseModel Resume { get; set; }
+    public ResumeDatabaseModel Resume { get; set; }
 }

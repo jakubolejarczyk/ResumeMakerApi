@@ -1,63 +1,123 @@
-﻿using ResumeMakerApi.Data.Database;
+﻿using ResumeMakerApi.Database.Context;
+using ResumeMakerApi.Database.Model;
 using ResumeMakerApi.Models.Database.Base;
 using ResumeMakerApi.Models.Database.Data;
 
 namespace ResumeMakerApi.Services.Database;
 
-public class SkillDatabaseService(SkillDatabaseData skillDatabaseData)
+public class SkillDatabaseService(DatabaseContext context)
 {
-    public void Create(BaseDatabaseModel<SkillDataDatabaseModel> skillToCreate)
+    public void Create(BaseDatabaseModel<SkillDataDatabaseModel> userToCreate)
     {
-        var skills = ReadAll();
-        skills.Add(skillToCreate);
-        skillDatabaseData.SetSkills(skills);
+        var resume = context.Resumes.FirstOrDefault(resume => resume.Id == userToCreate.Metadata.ParentId);
+        var newSkill = new SkillDatabaseModel
+        {
+            ParentId = userToCreate.Metadata.ParentId,
+            Order = userToCreate.Metadata.Order,
+            IsSelected = userToCreate.Metadata.IsSelected,
+            Category = userToCreate.Data.Category,
+            Skills = userToCreate.Data.Skills,
+            Resume = resume ?? throw new Exception($"Resume with ID {userToCreate.Metadata.ParentId} not found.")
+        };
+        context.Skills.Add(newSkill);
+        context.SaveChanges();
     }
 
     public List<BaseDatabaseModel<SkillDataDatabaseModel>> ReadAll()
     {
-        return skillDatabaseData.GetSkills();
+        return context.Skills.Select(user => new BaseDatabaseModel<SkillDataDatabaseModel>
+        {
+            Data = new SkillDataDatabaseModel
+            {
+                Category = user.Category,
+                Skills = user.Skills
+            },
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            }
+        }).ToList();
     }
 
     public BaseDatabaseModel<SkillDataDatabaseModel>? ReadById(int id)
     {
-        return ReadAll().Find(skill => skill.Metadata.Id == id);
+        return context.Skills.Where(user => user.Id == id).Select(user => new BaseDatabaseModel<SkillDataDatabaseModel>
+        {
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            },
+            Data = new SkillDataDatabaseModel
+            {
+                Category = user.Category,
+                Skills = user.Skills
+            }
+        }).FirstOrDefault();
     }
 
     public List<BaseDatabaseModel<SkillDataDatabaseModel>> ReadByParentId(int parentId)
     {
-        return [..ReadAll().Where(skill =>
+        return context.Skills.Where(user => user.ParentId == parentId).Select(user => new BaseDatabaseModel<SkillDataDatabaseModel>
         {
-            if (skill.Metadata.ParentId == null)
+            Metadata = new BaseDatabaseMetadataModel
             {
-                return false;
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            },
+            Data = new SkillDataDatabaseModel
+            {
+                Category = user.Category,
+                Skills = user.Skills
             }
-            return skill.Metadata.ParentId == parentId;
-        })];
+        }).ToList();
     }
 
-    public void Update(BaseDatabaseModel<SkillDataDatabaseModel> skillToUpdate)
+    public void Update(BaseDatabaseModel<SkillDataDatabaseModel> userToUpdate)
     {
-        var skills = ReadAll().Select((skill) =>
+        var user = context.Skills.FirstOrDefault(user => user.Id == userToUpdate.Metadata.Id);
+        if (user == null)
         {
-            if (skill.Metadata.Id == skillToUpdate.Metadata.Id)
-            {
-                return skillToUpdate;
-            }
-            return skill;
-        }).ToList();
-        skillDatabaseData.SetSkills(skills);
+            throw new Exception($"Skill with ID {userToUpdate.Metadata.Id} not found.");
+        }
+        user.ParentId = userToUpdate.Metadata.ParentId;
+        user.Order = userToUpdate.Metadata.Order;
+        user.IsSelected = userToUpdate.Metadata.IsSelected;
+        user.Category = userToUpdate.Data.Category;
+        user.Skills = userToUpdate.Data.Skills;
+        context.Skills.Update(user);
+        context.SaveChanges();
     }
 
     public void Delete(int id)
     {
-        var skills = skillDatabaseData.GetSkills()
-            .Where(skill => skill.Metadata.Id != id)
-            .ToList();
-        skillDatabaseData.SetSkills(skills);
+        context.Skills.RemoveRange(context.Skills.Where(user => user.Id == id));
+        context.SaveChanges();
     }
 
     public List<BaseDatabaseModel<SkillDataDatabaseModel>> GetSkills()
     {
-        return skillDatabaseData.GetSkills();
+        return context.Skills.Select(user => new BaseDatabaseModel<SkillDataDatabaseModel>
+        {
+            Data = new SkillDataDatabaseModel
+            {
+                Category = user.Category,
+                Skills = user.Skills
+            },
+            Metadata = new BaseDatabaseMetadataModel
+            {
+                Id = user.Id,
+                ParentId = user.ParentId,
+                Order = user.Order,
+                IsSelected = user.IsSelected
+            }
+        }).ToList();
     }
 }
