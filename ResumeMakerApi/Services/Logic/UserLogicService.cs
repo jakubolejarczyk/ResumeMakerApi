@@ -73,7 +73,7 @@ public class UserLogicService(UserDatabaseService service)
         var users = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        var lastOrder = users.Count == 0 ? 0 : users.Max(user => user.Metadata.Order);
+        var lastOrder = users.Count == 0 ? 0 : users.Max(user => user.Metadata.Order) + 1;
         var userToCreate = new BaseDatabaseModel<UserDataDatabaseModel>
         {
             Data = data,
@@ -81,7 +81,7 @@ public class UserLogicService(UserDatabaseService service)
             {
                 Id = NextId,
                 ParentId = parentId,
-                Order = lastOrder + 1,
+                Order = lastOrder,
                 IsSelected = false
             }
         };

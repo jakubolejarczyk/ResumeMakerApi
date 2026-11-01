@@ -70,7 +70,7 @@ public class EducationLogicService(EducationDatabaseService service)
         var educations = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        var lastOrder = educations.Count == 0 ? 0 : educations.Max(education => education.Metadata.Order);
+        var lastOrder = educations.Count == 0 ? 0 : educations.Max(education => education.Metadata.Order) + 1;
         var educationToCreate = new BaseDatabaseModel<EducationDataDatabaseModel>
         {
             Data = data,
@@ -78,7 +78,7 @@ public class EducationLogicService(EducationDatabaseService service)
             {
                 Id = NextId,
                 ParentId = parentId,
-                Order = lastOrder + 1,
+                Order = lastOrder,
                 IsSelected = false
             }
         };

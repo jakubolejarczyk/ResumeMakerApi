@@ -71,7 +71,7 @@ public class SkillLogicService(SkillDatabaseService service)
         var skills = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        var lastOrder = skills.Count == 0 ? 0 : skills.Max(skill => skill.Metadata.Order);
+        var lastOrder = skills.Count == 0 ? 0 : skills.Max(skill => skill.Metadata.Order) + 1;
         var skillToCreate = new BaseDatabaseModel<SkillDataDatabaseModel>
         {
             Data = data,
@@ -79,7 +79,7 @@ public class SkillLogicService(SkillDatabaseService service)
             {
                 Id = NextId,
                 ParentId = parentId,
-                Order = lastOrder + 1,
+                Order = lastOrder,
                 IsSelected = false
             }
         };

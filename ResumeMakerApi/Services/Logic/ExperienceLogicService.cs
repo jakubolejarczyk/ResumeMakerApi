@@ -70,7 +70,7 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
         var experiences = parentId.HasValue
             ? service.ReadByParentId(parentId.Value)
             : service.ReadAll();
-        var lastOrder = experiences.Count == 0 ? 0 : experiences.Max(experience => experience.Metadata.Order);
+        var lastOrder = experiences.Count == 0 ? 0 : experiences.Max(experience => experience.Metadata.Order) + 1;
         var experienceToCreate = new BaseDatabaseModel<ExperienceDataDatabaseModel>
         {
             Data = data,
@@ -78,7 +78,7 @@ public class ExperienceLogicService(ExperienceDatabaseService service)
             {
                 Id = NextId,
                 ParentId = parentId,
-                Order = lastOrder + 1,
+                Order = lastOrder,
                 IsSelected = false
             }
         };
