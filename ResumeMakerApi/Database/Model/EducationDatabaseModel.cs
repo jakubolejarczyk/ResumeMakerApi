@@ -1,4 +1,6 @@
-﻿namespace ResumeMakerApi.Database.Model;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ResumeMakerApi.Database.Model;
 
 public class EducationDatabaseModel
 {
@@ -19,4 +21,7 @@ public class EducationDatabaseModel
     public required int StartYear { get; set; }
 
     public required int EndYear { get; set; }
+
+    [ForeignKey("ResumeId")]
+    public required ResumeDatabaseModel Resume { get; set; }
 }

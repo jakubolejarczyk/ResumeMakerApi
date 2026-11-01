@@ -23,4 +23,6 @@ public class UserDatabaseModel
     public required string Country { get; set; }
 
     public required string[] Links { get; set; }
+
+    public required ICollection<ResumeDatabaseModel> Resumes { get; set; }
 }

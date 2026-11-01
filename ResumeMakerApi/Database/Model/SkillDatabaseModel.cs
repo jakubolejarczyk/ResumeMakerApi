@@ -1,4 +1,6 @@
-﻿namespace ResumeMakerApi.Database.Model;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ResumeMakerApi.Database.Model;
 
 public class SkillDatabaseModel
 {
@@ -13,4 +15,7 @@ public class SkillDatabaseModel
     public required string Category { get; set; }
 
     public required string[] Skills { get; set; }
+
+    [ForeignKey("ResumeId")]
+    public required ResumeDatabaseModel Resume { get; set; }
 }
