@@ -20,6 +20,10 @@ public class ResumeDatabaseModel
 
     public required string Rodo { get; set; }
 
+    public required string City { get; set; }
+
+    public required string Country { get; set; }
+
     [ForeignKey("UserId")]
     public required UserDatabaseModel User { get; set; }
 

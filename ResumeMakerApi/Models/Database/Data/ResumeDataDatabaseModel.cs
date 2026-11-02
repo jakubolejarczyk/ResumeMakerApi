@@ -9,4 +9,8 @@ public class ResumeDataDatabaseModel
     public required string Summary { get; set; }
 
     public required string Rodo { get; set; }
+
+    public required string City { get; set; }
+
+    public required string Country { get; set; }
 }

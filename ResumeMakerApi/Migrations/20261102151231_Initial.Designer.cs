@@ -11,7 +11,7 @@ using ResumeMakerApi.Database.Context;
 namespace ResumeMakerApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20261101101201_Initial")]
+    [Migration("20261102151231_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -123,6 +123,14 @@ namespace ResumeMakerApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsSelected")
                         .HasColumnType("bit");
 
@@ -200,14 +208,6 @@ namespace ResumeMakerApi.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()

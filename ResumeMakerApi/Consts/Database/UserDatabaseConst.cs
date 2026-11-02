@@ -13,8 +13,6 @@ public class UserDatabaseConst
             LastName = "Olejarczyk",
             PhoneNumber = "+48 501 007 197",
             Email = "jakub.olejarczyk@outlook.com",
-            City = "Kielce",
-            Country = "Poland",
             Links = [
                 "olejarczykjakub.com",
                 "linkedin.com/in/jakub-olejarczyk",

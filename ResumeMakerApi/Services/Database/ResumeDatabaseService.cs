@@ -18,6 +18,8 @@ public class ResumeDatabaseService(DatabaseContext context)
             Name = userToCreate.Data.Name,
             JobTitle = userToCreate.Data.JobTitle,
             Summary = userToCreate.Data.Summary,
+            City = userToCreate.Data.City,
+            Country = userToCreate.Data.Country,
             Rodo = userToCreate.Data.Rodo,
             User = user ?? throw new Exception($"User with ID {userToCreate.Metadata.ParentId} not found.")
         };
@@ -34,7 +36,9 @@ public class ResumeDatabaseService(DatabaseContext context)
                 Name = user.Name,
                 JobTitle = user.JobTitle,
                 Summary = user.Summary,
-                Rodo = user.Rodo
+                Rodo = user.Rodo,
+                City = user.City,
+                Country = user.Country
             },
             Metadata = new BaseDatabaseMetadataModel
             {
@@ -62,7 +66,9 @@ public class ResumeDatabaseService(DatabaseContext context)
                 Name = user.Name,
                 JobTitle = user.JobTitle,
                 Summary = user.Summary,
-                Rodo = user.Rodo
+                Rodo = user.Rodo,
+                City = user.City,
+                Country = user.Country
             }
         }).FirstOrDefault();
     }
@@ -83,7 +89,9 @@ public class ResumeDatabaseService(DatabaseContext context)
                 Name = user.Name,
                 JobTitle = user.JobTitle,
                 Summary = user.Summary,
-                Rodo = user.Rodo
+                Rodo = user.Rodo,
+                City = user.City,
+                Country = user.Country
             }
         }).ToList();
     }
@@ -102,6 +110,8 @@ public class ResumeDatabaseService(DatabaseContext context)
         user.JobTitle = userToUpdate.Data.JobTitle;
         user.Summary = userToUpdate.Data.Summary;
         user.Rodo = userToUpdate.Data.Rodo;
+        user.City = userToUpdate.Data.City;
+        user.Country = userToUpdate.Data.Country;
         context.Resumes.Update(user);
         context.SaveChanges();
     }
@@ -121,7 +131,9 @@ public class ResumeDatabaseService(DatabaseContext context)
                 Name = user.Name,
                 JobTitle = user.JobTitle,
                 Summary = user.Summary,
-                Rodo = user.Rodo
+                Rodo = user.Rodo,
+                City = user.City,
+                Country = user.Country
             },
             Metadata = new BaseDatabaseMetadataModel
             {

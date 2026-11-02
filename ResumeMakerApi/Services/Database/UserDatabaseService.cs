@@ -18,8 +18,6 @@ public class UserDatabaseService(DatabaseContext context)
             LastName = userToCreate.Data.LastName,
             PhoneNumber = userToCreate.Data.PhoneNumber,
             Email = userToCreate.Data.Email,
-            City = userToCreate.Data.City,
-            Country = userToCreate.Data.Country,
             Links = userToCreate.Data.Links
         };
         context.Users.Add(newUser);
@@ -36,8 +34,6 @@ public class UserDatabaseService(DatabaseContext context)
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
-                City = user.City,
-                Country = user.Country,
                 Links = user.Links
             },
             Metadata = new BaseDatabaseMetadataModel
@@ -67,8 +63,6 @@ public class UserDatabaseService(DatabaseContext context)
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
-                City = user.City,
-                Country = user.Country,
                 Links = user.Links
             }
         }).FirstOrDefault();
@@ -91,8 +85,6 @@ public class UserDatabaseService(DatabaseContext context)
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
-                City = user.City,
-                Country = user.Country,
                 Links = user.Links
             }
         }).ToList();
@@ -112,8 +104,6 @@ public class UserDatabaseService(DatabaseContext context)
         user.LastName = userToUpdate.Data.LastName;
         user.PhoneNumber = userToUpdate.Data.PhoneNumber;
         user.Email = userToUpdate.Data.Email;
-        user.City = userToUpdate.Data.City;
-        user.Country = userToUpdate.Data.Country;
         user.Links = userToUpdate.Data.Links;
         context.Users.Update(user);
         context.SaveChanges();
@@ -135,8 +125,6 @@ public class UserDatabaseService(DatabaseContext context)
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
-                City = user.City,
-                Country = user.Country,
                 Links = user.Links
             },
             Metadata = new BaseDatabaseMetadataModel
