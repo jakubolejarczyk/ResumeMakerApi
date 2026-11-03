@@ -40,6 +40,7 @@ builder.Services.AddScoped<SkillLogicService>();
 builder.Services.AddScoped<ResumeLogicService>();
 builder.Services.AddScoped<ExperienceLogicService>();
 builder.Services.AddScoped<EducationLogicService>();
+builder.Services.AddScoped<PdfService>();
 
 builder.Services.AddCors(options =>
 {
