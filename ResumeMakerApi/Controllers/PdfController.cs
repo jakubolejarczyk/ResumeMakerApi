@@ -32,13 +32,11 @@ public class PdfController(
 
         try
         {
-            var pdf = await pdfService.GeneratePdf(user.Id);
-
+            var result = await pdfService.GeneratePdf(user.Id);
             return File(
-                pdf,
+                result.Pdf,
                 "application/pdf",
-                "MyResume.pdf"
-            );
+                result.FileName);
         }
         catch (KeyNotFoundException ex)
         {

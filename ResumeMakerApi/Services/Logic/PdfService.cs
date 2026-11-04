@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using ResumeMakerApi.Data;
 using ResumeMakerApi.Database.Context;
-using ResumeMakerApi.Models;
 using System.Globalization;
 
 public class PdfService
@@ -15,19 +13,22 @@ public class PdfService
     private static readonly CultureInfo PolishCulture =
         CultureInfo.GetCultureInfo("pl-PL");
 
-    // Kolory
-    private const string PrimaryColor = "#171717";
+    // Paleta kolorów
+    private const string PrimaryColor = "#172033";
     private const string AccentColor = "#2563EB";
-    private const string TextColor = "#404040";
-    private const string SecondaryColor = "#737373";
-    private const string DividerColor = "#D4D4D4";
+    private const string TextColor = "#3F4754";
+    private const string SecondaryColor = "#727C8C";
+    private const string DividerColor = "#E4E8EF";
+    private const string HeaderDividerColor = "#2563EB";
 
-    // Spójne odstępy
-    private const float BodyLineHeight = 1.2f;
+    // Typografia i odstępy
+    private const float BodyFontSize = 8.8f;
+    private const float BodyLineHeight = 1.25f;
     private const float BulletLineHeight = 1.3f;
-    private const float SectionSpacing = 12f;
-    private const float ItemSpacing = 6f;
-    private const float ExperienceSpacing = 11f;
+
+    private const float SectionSpacing = 13f;
+    private const float ItemSpacing = 7f;
+    private const float ExperienceSpacing = 12f;
     private const float BulletSpacing = 3f;
 
     public PdfService(DatabaseContext context)
@@ -35,11 +36,14 @@ public class PdfService
         this.context = context;
     }
 
-    public async Task<byte[]> GeneratePdf(int userId)
+    public async Task<(byte[] Pdf, string FileName)> GeneratePdf(int userId)
     {
         QuestPDF.Settings.License = LicenseType.Community;
 
-        // Pobranie wybranego CV użytkownika
+        // =====================================
+        // POBIERANIE DANYCH
+        // =====================================
+
         var resume = await context.Resumes
             .AsNoTracking()
             .Where(r => r.User.Id == userId && r.IsSelected)
@@ -52,26 +56,27 @@ public class PdfService
             throw new Exception("Nie znaleziono wybranego CV użytkownika.");
         }
 
-        // Doświadczenie
         var experiences = await context.Experiences
             .AsNoTracking()
             .Where(e => e.ParentId == resume.Id)
             .OrderBy(e => e.Order)
             .ToListAsync();
 
-        // Edukacja
         var educations = await context.Educations
             .AsNoTracking()
             .Where(e => e.ParentId == resume.Id)
             .OrderBy(e => e.Order)
             .ToListAsync();
 
-        // Umiejętności
         var skills = await context.Skills
             .AsNoTracking()
             .Where(s => s.ParentId == resume.Id)
             .OrderBy(s => s.Order)
             .ToListAsync();
+
+        // =====================================
+        // GENEROWANIE PDF
+        // =====================================
 
         var document = Document.Create(container =>
         {
@@ -79,14 +84,14 @@ public class PdfService
             {
                 page.Size(PageSizes.A4);
 
-                page.MarginHorizontal(23);
-                page.MarginVertical(19);
+                page.MarginHorizontal(25);
+                page.MarginVertical(22);
 
                 page.PageColor(Colors.White);
 
                 page.DefaultTextStyle(style => style
                     .FontFamily("Lato")
-                    .FontSize(8.7f)
+                    .FontSize(BodyFontSize)
                     .FontColor(TextColor)
                     .LineHeight(BodyLineHeight));
 
@@ -108,16 +113,17 @@ public class PdfService
                                     .Text(string.IsNullOrWhiteSpace(fullName)
                                         ? "Twoje CV"
                                         : fullName)
-                                    .FontSize(24)
+                                    .FontFamily("Lato")
+                                    .FontSize(25)
                                     .Bold()
                                     .FontColor(PrimaryColor);
 
                                 if (!string.IsNullOrWhiteSpace(resume.JobTitle))
                                 {
                                     left.Item()
-                                        .PaddingTop(3)
-                                        .Text(resume.JobTitle)
-                                        .FontSize(11.5f)
+                                        .PaddingTop(4)
+                                        .Text(resume.JobTitle.Trim())
+                                        .FontSize(11)
                                         .SemiBold()
                                         .FontColor(AccentColor);
                                 }
@@ -127,19 +133,16 @@ public class PdfService
                             .AlignRight()
                             .Column(right =>
                             {
-                                // E-mail
                                 AddHeaderContact(
                                     right,
                                     resume.User?.Email,
                                     CreateEmailLink(resume.User?.Email));
 
-                                // Telefon
                                 AddHeaderContact(
                                     right,
                                     resume.User?.PhoneNumber,
                                     CreatePhoneLink(resume.User?.PhoneNumber));
 
-                                // Lokalizacja - bez linku
                                 var location = string.Join(", ",
                                     new[] { resume.City, resume.Country }
                                         .Where(x => !string.IsNullOrWhiteSpace(x)));
@@ -148,15 +151,15 @@ public class PdfService
                             });
                     });
 
-                    // Linia pod nagłówkiem
+                    // Mocniejsza linia pod nagłówkiem
                     layout.Item()
-                        .PaddingTop(11)
-                        .PaddingBottom(12)
-                        .Height(2)
-                        .Background(AccentColor);
+                        .PaddingTop(12)
+                        .PaddingBottom(15)
+                        .Height(1.2f)
+                        .Background(HeaderDividerColor);
 
                     // =====================================
-                    // GŁÓWNA CZĘŚĆ - DWIE KOLUMNY
+                    // DWIE KOLUMNY
                     // =====================================
 
                     layout.Item().Row(columns =>
@@ -165,35 +168,37 @@ public class PdfService
                         // LEWA KOLUMNA
                         // =====================================
 
-                        columns.ConstantItem(175)
-                            .PaddingRight(18)
+                        columns.ConstantItem(170)
+                            .PaddingRight(17)
                             .Column(left =>
                             {
-                                // TECHNOLOGIE
+                                // TECHNOLOGIE I UMIEJĘTNOŚCI
                                 if (skills.Any())
                                 {
-                                    AddSectionTitle(left, "TECHNOLOGIE");
+                                    AddSectionTitle(left, "UMIEJĘTNOŚCI");
 
                                     foreach (var skill in skills)
                                     {
+                                        var validSkills = skill.Skills?
+                                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                                            .ToList();
+
                                         if (!string.IsNullOrWhiteSpace(skill.Category))
                                         {
                                             left.Item()
-                                                .PaddingTop(5)
-                                                .Text(skill.Category)
+                                                .PaddingTop(6)
+                                                .PaddingBottom(2)
+                                                .Text(skill.Category.Trim())
                                                 .FontSize(8.7f)
                                                 .Bold()
                                                 .FontColor(PrimaryColor);
                                         }
 
-                                        if (skill.Skills != null)
+                                        if (validSkills != null)
                                         {
-                                            foreach (var item in skill.Skills)
+                                            foreach (var item in validSkills)
                                             {
-                                                if (!string.IsNullOrWhiteSpace(item))
-                                                {
-                                                    AddBullet(left, item, 8);
-                                                }
+                                                AddBullet(left, item, 8.3f);
                                             }
                                         }
                                     }
@@ -212,17 +217,25 @@ public class PdfService
                                             .PaddingTop(ItemSpacing)
                                             .Column(item =>
                                             {
-                                                item.Item()
-                                                    .Text($"{education.StartYear} – {education.EndYear}")
-                                                    .FontSize(8)
-                                                    .FontColor(AccentColor)
-                                                    .SemiBold();
+                                                var dateRange = FormatYearRange(
+                                                    education.StartYear,
+                                                    education.EndYear);
+
+                                                if (!string.IsNullOrWhiteSpace(dateRange))
+                                                {
+                                                    item.Item()
+                                                        .Text(dateRange)
+                                                        .FontSize(7.8f)
+                                                        .SemiBold()
+                                                        .FontColor(AccentColor);
+                                                }
 
                                                 if (!string.IsNullOrWhiteSpace(education.Degree))
                                                 {
                                                     item.Item()
-                                                        .Text(education.Degree)
-                                                        .FontSize(8.7f)
+                                                        .PaddingTop(2)
+                                                        .Text(education.Degree.Trim())
+                                                        .FontSize(8.8f)
                                                         .Bold()
                                                         .FontColor(PrimaryColor);
                                                 }
@@ -230,38 +243,38 @@ public class PdfService
                                                 if (!string.IsNullOrWhiteSpace(education.FieldOfStudy))
                                                 {
                                                     item.Item()
-                                                        .Text(education.FieldOfStudy)
-                                                        .FontSize(8)
-                                                        .FontColor(TextColor)
-                                                        .LineHeight(BodyLineHeight);
+                                                        .PaddingTop(2)
+                                                        .Text(education.FieldOfStudy.Trim())
+                                                        .FontSize(8.2f)
+                                                        .FontColor(TextColor);
                                                 }
 
                                                 if (!string.IsNullOrWhiteSpace(education.InstitutionName))
                                                 {
                                                     item.Item()
-                                                        .Text(education.InstitutionName)
-                                                        .FontSize(8)
-                                                        .FontColor(SecondaryColor)
-                                                        .LineHeight(BodyLineHeight);
+                                                        .PaddingTop(2)
+                                                        .Text(education.InstitutionName.Trim())
+                                                        .FontSize(8.1f)
+                                                        .FontColor(SecondaryColor);
                                                 }
                                             });
                                     }
                                 }
 
                                 // LINKI
-                                if (resume.User?.Links != null &&
-                                    resume.User.Links.Length > 0)
+                                var userLinks = resume.User?.Links?
+                                    .Where(link => !string.IsNullOrWhiteSpace(link))
+                                    .ToList();
+
+                                if (userLinks != null && userLinks.Any())
                                 {
                                     left.Item().PaddingTop(SectionSpacing);
 
                                     AddSectionTitle(left, "LINKI");
 
-                                    foreach (var link in resume.User.Links)
+                                    foreach (var link in userLinks)
                                     {
-                                        if (!string.IsNullOrWhiteSpace(link))
-                                        {
-                                            AddWebLink(left, link);
-                                        }
+                                        AddWebLink(left, link);
                                     }
                                 }
                             });
@@ -271,18 +284,18 @@ public class PdfService
                         // =====================================
 
                         columns.RelativeItem()
-                            .PaddingLeft(18)
+                            .PaddingLeft(17)
                             .Column(right =>
                             {
                                 // PODSUMOWANIE
                                 if (!string.IsNullOrWhiteSpace(resume.Summary))
                                 {
-                                    AddSectionTitle(right, "PODSUMOWANIE");
+                                    AddSectionTitle(right, "PROFIL ZAWODOWY");
 
                                     right.Item()
                                         .PaddingBottom(SectionSpacing)
-                                        .Text(resume.Summary)
-                                        .FontSize(8.7f)
+                                        .Text(resume.Summary.Trim())
+                                        .FontSize(BodyFontSize)
                                         .FontColor(TextColor)
                                         .LineHeight(BodyLineHeight);
                                 }
@@ -306,8 +319,8 @@ public class PdfService
                                                             if (!string.IsNullOrWhiteSpace(experience.JobTitle))
                                                             {
                                                                 details.Item()
-                                                                    .Text(experience.JobTitle)
-                                                                    .FontSize(10.5f)
+                                                                    .Text(experience.JobTitle.Trim())
+                                                                    .FontSize(10.2f)
                                                                     .Bold()
                                                                     .FontColor(PrimaryColor);
                                                             }
@@ -316,21 +329,27 @@ public class PdfService
                                                             {
                                                                 details.Item()
                                                                     .PaddingTop(2)
-                                                                    .Text(experience.Company)
+                                                                    .Text(experience.Company.Trim())
                                                                     .FontSize(8.7f)
                                                                     .SemiBold()
                                                                     .FontColor(SecondaryColor);
                                                             }
                                                         });
 
-                                                    header.ConstantItem(125)
-                                                        .AlignRight()
-                                                        .AlignTop()
-                                                        .Text(
-                                                            $"{FormatDate(experience.StartDate)} – {FormatDate(experience.EndDate, true)}")
-                                                        .FontSize(7.5f)
-                                                        .FontColor(AccentColor)
-                                                        .SemiBold();
+                                                    var dateRange = FormatDateRange(
+                                                        experience.StartDate,
+                                                        experience.EndDate);
+
+                                                    if (!string.IsNullOrWhiteSpace(dateRange))
+                                                    {
+                                                        header.ConstantItem(112)
+                                                            .AlignRight()
+                                                            .AlignTop()
+                                                            .Text(dateRange)
+                                                            .FontSize(7.3f)
+                                                            .SemiBold()
+                                                            .FontColor(AccentColor);
+                                                    }
                                                 });
 
                                                 if (experience.Description != null)
@@ -339,7 +358,7 @@ public class PdfService
                                                     {
                                                         if (!string.IsNullOrWhiteSpace(description))
                                                         {
-                                                            AddBullet(item, description, 8.7f);
+                                                            AddBullet(item, description, 8.5f);
                                                         }
                                                     }
                                                 }
@@ -347,15 +366,15 @@ public class PdfService
                                     }
                                 }
 
-                                // RODO
+                                // KLAUZULA RODO
                                 if (!string.IsNullOrWhiteSpace(resume.Rodo))
                                 {
                                     right.Item()
-                                        .PaddingTop(7)
-                                        .Text(resume.Rodo)
-                                        .FontSize(7)
+                                        .PaddingTop(5)
+                                        .Text(resume.Rodo.Trim())
+                                        .FontSize(6.8f)
                                         .FontColor(SecondaryColor)
-                                        .LineHeight(BodyLineHeight);
+                                        .LineHeight(1.2f);
                                 }
                             });
                     });
@@ -363,7 +382,25 @@ public class PdfService
             });
         });
 
-        return document.GeneratePdf();
+        var pdf = document.GeneratePdf();
+
+        // Pobranie nazwy CV z bazy danych
+        var resumeName = string.IsNullOrWhiteSpace(resume.Name)
+            ? "CV"
+            : resume.Name.Trim();
+
+        // Usunięcie niedozwolonych znaków z nazwy pliku
+        var invalidChars = Path.GetInvalidFileNameChars();
+
+        var safeFileName = new string(
+            resumeName
+                .Select(c => invalidChars.Contains(c) ? '_' : c)
+                .ToArray());
+
+        // Ostateczna nazwa pliku
+        var fileName = $"{safeFileName}.pdf";
+
+        return (pdf, fileName);
     }
 
     // =====================================
@@ -418,7 +455,32 @@ public class PdfService
             return parsedDate.ToString("MMMM yyyy", PolishCulture);
         }
 
-        return date;
+        return date.Trim();
+    }
+
+    private static string FormatDateRange(string? startDate, string? endDate)
+    {
+        var start = FormatDate(startDate);
+        var end = FormatDate(endDate, true);
+
+        if (string.IsNullOrWhiteSpace(start))
+            return end;
+
+        if (string.IsNullOrWhiteSpace(end))
+            return start;
+
+        return $"{start} – {end}";
+    }
+
+    private static string FormatYearRange(int startYear, int endYear)
+    {
+        if (startYear <= 0)
+            return endYear > 0 ? endYear.ToString() : "";
+
+        if (endYear <= 0)
+            return $"{startYear} – obecnie";
+
+        return $"{startYear} – {endYear}";
     }
 
     // =====================================
@@ -495,14 +557,14 @@ public class PdfService
             return;
 
         var item = column.Item()
-            .PaddingBottom(3)
+            .PaddingBottom(4)
             .AlignRight();
 
         if (!string.IsNullOrWhiteSpace(hyperlink))
         {
             item.DefaultTextStyle(style => style
                 .FontFamily("Lato")
-                .FontSize(7.5f)
+                .FontSize(7.8f)
                 .FontColor(SecondaryColor)
                 .LineHeight(BodyLineHeight))
                 .Text(text =>
@@ -512,16 +574,16 @@ public class PdfService
         }
         else
         {
-            item.Text(value)
+            item.Text(value.Trim())
                 .FontFamily("Lato")
-                .FontSize(7.5f)
+                .FontSize(7.8f)
                 .FontColor(SecondaryColor)
                 .LineHeight(BodyLineHeight);
         }
     }
 
     // =====================================
-    // LINKI WWW W SEKCJI LINKI
+    // LINKI WWW
     // =====================================
 
     private static void AddWebLink(
@@ -533,13 +595,14 @@ public class PdfService
 
         var normalizedLink = NormalizeWebUrl(link);
 
-        var item = column.Item().PaddingTop(3);
+        var item = column.Item()
+            .PaddingTop(4);
 
         if (!string.IsNullOrWhiteSpace(normalizedLink))
         {
             item.DefaultTextStyle(style => style
                 .FontFamily("Lato")
-                .FontSize(8)
+                .FontSize(8.1f)
                 .FontColor(AccentColor)
                 .LineHeight(BodyLineHeight))
                 .Text(text =>
@@ -551,14 +614,14 @@ public class PdfService
         {
             item.Text(link.Trim())
                 .FontFamily("Lato")
-                .FontSize(8)
+                .FontSize(8.1f)
                 .FontColor(AccentColor)
                 .LineHeight(BodyLineHeight);
         }
     }
 
     // =====================================
-    // TYTUŁ SEKCJI
+    // NAGŁÓWKI SEKCJI
     // =====================================
 
     private static void AddSectionTitle(
@@ -567,20 +630,30 @@ public class PdfService
     {
         column.Item()
             .PaddingBottom(5)
-            .Text(title)
-            .FontFamily("Lato")
-            .FontSize(9.7f)
-            .Bold()
-            .FontColor(PrimaryColor);
+            .Row(row =>
+            {
+                row.ConstantItem(3)
+                    .Height(10)
+                    .Background(AccentColor);
+
+                row.RelativeItem()
+                    .PaddingLeft(7)
+                    .AlignMiddle()
+                    .Text(title)
+                    .FontFamily("Lato")
+                    .FontSize(9.2f)
+                    .Bold()
+                    .FontColor(PrimaryColor);
+            });
 
         column.Item()
-            .PaddingBottom(3)
-            .Height(1)
+            .PaddingBottom(4)
+            .Height(0.5f)
             .Background(DividerColor);
     }
 
     // =====================================
-    // PUNKT LISTY Z WCIĘCIEM WISZĄCYM
+    // PUNKTY LISTY
     // =====================================
 
     private static void AddBullet(
@@ -588,12 +661,16 @@ public class PdfService
         string text,
         float fontSize = 8.5f)
     {
+        if (string.IsNullOrWhiteSpace(text))
+            return;
+
         column.Item()
             .PaddingTop(BulletSpacing)
-            .PaddingLeft(5)
+            .PaddingLeft(2)
             .Row(row =>
             {
-                row.ConstantItem(11)
+                row.ConstantItem(10)
+                    .PaddingTop(1)
                     .Text("•")
                     .FontFamily("Lato")
                     .FontSize(fontSize)
