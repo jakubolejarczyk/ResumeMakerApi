@@ -1,28 +1,51 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ResumeMakerApi.Database.Context;
 using ResumeMakerApi.Services.Logic;
 
 namespace ResumeMakerApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PdfController : ControllerBase
+public class PdfController(
+    PdfService pdfService,
+    DatabaseContext context
+) : ControllerBase
 {
-    private readonly PdfService _pdfService;
-
-    public PdfController(PdfService pdfService)
-    {
-        _pdfService = pdfService;
-    }
-
     [HttpGet("download")]
-    public IActionResult DownloadPdf()
+    public async Task<IActionResult> DownloadResume()
     {
-        var pdfBytes = _pdfService.GeneratePdf();
+        var user = await context.Users
+            .AsNoTracking()
+            .Where(u => u.IsSelected)
+            .OrderBy(u => u.Order)
+            .FirstOrDefaultAsync();
 
-        return File(
-            pdfBytes,
-            "application/pdf",
-            "my-document.pdf"
-        );
+        if (user == null)
+        {
+            return NotFound(new
+            {
+                message = "No selected user was found."
+            });
+        }
+
+        try
+        {
+            var pdf = await pdfService.GeneratePdf(user.Id);
+
+            return File(
+                pdf,
+                "application/pdf",
+                "MyResume.pdf"
+            );
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new
+            {
+                message = ex.Message
+            });
+        }
     }
 }
